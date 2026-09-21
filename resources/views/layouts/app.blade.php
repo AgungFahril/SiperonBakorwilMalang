@@ -11,7 +11,8 @@
     <meta name="description"
           content="Sistem Peminjaman Ruangan Online Bakorwil III Malang">
 
-    <link rel="stylesheet" href="{{ asset('css/siperon.css') }}">
+    {{-- Satu-satunya sumber CSS: resources/css/style.css --}}
+    @vite(['resources/css/style.css', 'resources/js/app.js'])
 </head>
 
 <body>
@@ -41,15 +42,10 @@
         <div class="brand-area">
             <div class="container brand-container">
 
-                <a href="{{ url('/') }}" class="brand">
-                    <div class="brand-emblem">
-                        BM
-                    </div>
-
-                    <div class="brand-text">
-                        <strong>BAKORWIL</strong>
-                        <span>III MALANG <b>PROV JATIM</b></span>
-                    </div>
+                <a href="{{ route('home') }}" class="navbar-brand">
+                    <img src="{{ asset('images/logo-bakorwil.png') }}"
+                         alt="Logo Bakorwil III Malang"
+                         class="logo">
                 </a>
 
             </div>
