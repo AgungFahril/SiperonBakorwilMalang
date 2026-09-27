@@ -13,7 +13,7 @@
             </div>
             <div class="stat-info">
                 <span class="stat-label">Total Ruangan</span>
-                <span class="stat-value">12</span>
+                <span class="stat-value">{{ $totalRooms }}</span>
             </div>
         </div>
         
@@ -23,7 +23,7 @@
             </div>
             <div class="stat-info">
                 <span class="stat-label">Menunggu Persetujuan</span>
-                <span class="stat-value">5</span>
+                <span class="stat-value">{{ $pendingCount }}</span>
             </div>
         </div>
         
@@ -33,7 +33,7 @@
             </div>
             <div class="stat-info">
                 <span class="stat-label">Peminjaman Hari Ini</span>
-                <span class="stat-value">3</span>
+                <span class="stat-value">{{ $todayBookings }}</span>
             </div>
         </div>
         
@@ -43,10 +43,16 @@
             </div>
             <div class="stat-info">
                 <span class="stat-label">Total Pengguna</span>
-                <span class="stat-value">148</span>
+                <span class="stat-value">{{ $totalUsers }}</span>
             </div>
         </div>
     </div>
+
+    @if(session('success'))
+        <div style="padding: 0.75rem 1rem; background: #d1fae5; color: #065f46; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem;">
+            {{ session('success') }}
+        </div>
+    @endif
     
     <!-- Recent Bookings Table -->
     <div class="card">
@@ -67,63 +73,57 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($recentBookings as $booking)
                     <tr>
-                        <td>#PMJ-001</td>
+                        <td>#PMJ-{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</td>
                         <td>
-                            <strong>Dinas Pendidikan Prov Jatim</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.75rem;">Bpk. Budi Santoso</span>
+                            <strong>{{ $booking->instansi ?? '-' }}</strong><br>
+                            <span style="color: var(--text-muted); font-size: 0.75rem;">{{ $booking->nama_pemohon }}</span>
                         </td>
-                        <td>Ruang Rapat Utama (Bhirawa)</td>
-                        <td>24 Sep 2026<br><span style="color: var(--text-muted); font-size: 0.75rem;">09:00 - 15:00</span></td>
-                        <td><span class="status-badge status-pending">Menunggu</span></td>
+                        <td>{{ $booking->room->name ?? '-' }}</td>
+                        <td>{{ $booking->tanggal->translatedFormat('d M Y') }}<br><span style="color: var(--text-muted); font-size: 0.75rem;">{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</span></td>
                         <td>
-                            <button class="action-btn" title="Detail"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg></button>
-                            <button class="action-btn" title="Setujui" style="color: #059669;"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg></button>
-                            <button class="action-btn" title="Tolak" style="color: #dc2626;"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" /></svg></button>
+                            @if($booking->status === 'pending')
+                                <span class="status-badge status-pending">Menunggu</span>
+                            @elseif($booking->status === 'disetujui')
+                                <span class="status-badge status-approved">Disetujui</span>
+                            @elseif($booking->status === 'ditolak')
+                                <span class="status-badge status-rejected">Ditolak</span>
+                            @else
+                                <span class="status-badge status-done">Selesai</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.peminjaman.index') }}" class="action-btn" title="Detail">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                            </a>
+                            @if($booking->status === 'pending')
+                                <form action="{{ route('admin.peminjaman.status', $booking) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="disetujui">
+                                    <button type="submit" class="action-btn" title="Setujui" style="color: #059669;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.peminjaman.status', $booking) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="ditolak">
+                                    <button type="submit" class="action-btn" title="Tolak" style="color: #dc2626;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
-                    
+                    @empty
                     <tr>
-                        <td>#PMJ-002</td>
-                        <td>
-                            <strong>Dinas Kominfo Malang</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.75rem;">Ibu Rina S.</span>
-                        </td>
-                        <td>Aula Pertemuan Bakorwil</td>
-                        <td>25 Sep 2026<br><span style="color: var(--text-muted); font-size: 0.75rem;">08:00 - 12:00</span></td>
-                        <td><span class="status-badge status-approved">Disetujui</span></td>
-                        <td>
-                            <button class="action-btn" title="Detail"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg></button>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                            Belum ada data peminjaman.
                         </td>
                     </tr>
-                    
-                    <tr>
-                        <td>#PMJ-003</td>
-                        <td>
-                            <strong>Universitas Brawijaya</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.75rem;">Panitia Seminar</span>
-                        </td>
-                        <td>Ruang Sidang</td>
-                        <td>21 Sep 2026<br><span style="color: var(--text-muted); font-size: 0.75rem;">13:00 - 16:00</span></td>
-                        <td><span class="status-badge status-rejected">Ditolak</span></td>
-                        <td>
-                            <button class="action-btn" title="Detail"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg></button>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td>#PMJ-004</td>
-                        <td>
-                            <strong>Dinas Pariwisata</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.75rem;">Bpk. Agus W.</span>
-                        </td>
-                        <td>Ruang Rapat Utama (Bhirawa)</td>
-                        <td>28 Sep 2026<br><span style="color: var(--text-muted); font-size: 0.75rem;">09:00 - 12:00</span></td>
-                        <td><span class="status-badge status-approved">Disetujui</span></td>
-                        <td>
-                            <button class="action-btn" title="Detail"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg></button>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
