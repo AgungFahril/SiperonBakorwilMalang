@@ -1,4 +1,11 @@
 /* =========================================
+   SIPERON - style.css
+   Gabungan dari siperon.css + app.css
+   Simpan di: resources/css/style.css
+========================================= */
+
+
+/* =========================================
    RESET
 ========================================= */
 
@@ -22,6 +29,13 @@ body {
 a {
     text-decoration: none;
     color: inherit;
+}
+
+/* Mencegah gambar tampil dalam ukuran asli/kebesaran */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 .container {
@@ -85,17 +99,35 @@ a {
     gap: 16px;
 }
 
-.brand-emblem {
-    width: 74px;
-    height: 86px;
+
+/* =========================================
+   LOGO BAKORWIL
+   (satu-satunya tempat aturan logo, jangan
+   diduplikasi di bagian lain)
+========================================= */
+
+.navbar-brand {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border: 3px solid #777;
-    border-radius: 35% 35% 45% 45%;
-    font-weight: bold;
-    font-size: 22px;
-    color: #087eac;
+    gap: 16px;
+    text-decoration: none;
+}
+
+.navbar-brand .logo {
+    height: 148px;     /* sama dengan logo di situs referensi (~148px) */
+    width: auto;
+    max-width: 100%;
+    display: block;
+}
+
+.brand-title {
+    font-weight: 700;
+    font-size: 20px;
+    color: #1a73e8;
+}
+
+.brand-title .highlight {
+    color: #f97316;
 }
 
 .brand-text {
@@ -248,6 +280,24 @@ a {
 
 
 /* =========================================
+   ALERT
+========================================= */
+
+.alert {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #e6f7ee;
+    color: #1e7a4a;
+    border: 1px solid #b9e6cf;
+}
+
+
+/* =========================================
    SECTION
 ========================================= */
 
@@ -382,6 +432,11 @@ section {
     font-weight: bold;
     letter-spacing: 1px;
     text-align: center;
+    /* latar default (dipakai kalau ruangan belum punya foto) */
+    background-color: #536168;
+    background-image: linear-gradient(135deg, #2d3b40, #b7a486);
+    background-size: cover;
+    background-position: center;
 }
 
 .room-arjuno {
@@ -464,15 +519,27 @@ section {
     font-size: 22px;
 }
 
-.calendar-header button {
+.calendar-header button,
+.calendar-header a {
     width: 38px;
     height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     border-radius: 50%;
     background: #e9f8fc;
     color: #08a6d9;
     font-size: 25px;
+    line-height: 1;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.calendar-header button:hover,
+.calendar-header a:hover {
+    background: #08a6d9;
+    color: #ffffff;
 }
 
 .calendar-grid {
@@ -696,10 +763,9 @@ section {
         font-size: 16px;
     }
 
-    .brand-emblem {
-        width: 55px;
-        height: 65px;
-        font-size: 17px;
+    /* Selector sama dengan aturan desktop supaya tidak kalah spesifisitas */
+    .navbar-brand .logo {
+        height: 90px;
     }
 
     .main-nav {
