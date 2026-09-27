@@ -1254,6 +1254,13 @@ textarea.form-control {
     opacity: 1;
 }
 
+.modal-dialog form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
 .modal-header {
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-light);

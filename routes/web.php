@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\BookingController as AdminBookingController;
-use App\Http\Controllers\Admin\RoomController as AdminRoomController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PeminjamanController;
+use App\Http\Controllers\Admin\RuanganController;
+use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +18,7 @@ Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->
 
 /*
 |--------------------------------------------------------------------------
-| AUTH ROUTES - login & register (punya teman Anda)
+| AUTH ROUTES - login & register
 |--------------------------------------------------------------------------
 */
 Route::get('/login', function () {
@@ -29,36 +31,32 @@ Route::get('/register', function () {
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ROUTES - semua digabung jadi satu group, wajib login
+| ADMIN ROUTES - Terhubung ke database
+| Sementara tanpa middleware auth agar bisa diakses langsung.
+| Aktifkan middleware(['auth']) setelah sistem login disiapkan.
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // CRUD ruangan - terhubung ke database
-    Route::resource('rooms', AdminRoomController::class)->except(['show']);
+    // Peminjaman
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+    Route::patch('/peminjaman/{booking}/status', [PeminjamanController::class, 'updateStatus'])->name('peminjaman.status');
+    Route::delete('/peminjaman/{booking}', [PeminjamanController::class, 'destroy'])->name('peminjaman.destroy');
 
-    // Pengajuan peminjaman - terhubung ke database
-    Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
-    Route::patch('bookings/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('bookings.status');
-    Route::delete('bookings/{booking}', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
+    // Ruangan
+    Route::get('/ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
+    Route::post('/ruangan', [RuanganController::class, 'store'])->name('ruangan.store');
+    Route::put('/ruangan/{room}', [RuanganController::class, 'update'])->name('ruangan.update');
+    Route::delete('/ruangan/{room}', [RuanganController::class, 'destroy'])->name('ruangan.destroy');
 
-    // Halaman statis (punya teman Anda, belum terhubung ke database)
-    Route::get('/ruangan', function () {
-        return view('admin.ruangan');
-    })->name('ruangan');
+    // Pengguna
+    Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna.index');
 
-    Route::get('/peminjaman', function () {
-        return view('admin.peminjaman');
-    })->name('peminjaman');
-
-    Route::get('/pengguna', function () {
-        return view('admin.pengguna');
-    })->name('pengguna');
-
+    // Pengaturan (tetap view statis untuk saat ini)
     Route::get('/pengaturan', function () {
         return view('admin.pengaturan');
     })->name('pengaturan');
