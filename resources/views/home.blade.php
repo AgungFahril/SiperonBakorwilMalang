@@ -136,11 +136,9 @@
         <div class="calendar-wrapper">
 
             <div class="calendar-header">
-                <a href="{{ route('home', ['month' => $current->copy()->subMonth()->month, 'year' => $current->copy()->subMonth()->year]) }}#jadwal"
-                   aria-label="Bulan sebelumnya">‹</a>
+                <a href="{{ route('home', ['month' => $current->copy()->subMonth()->month, 'year' => $current->copy()->subMonth()->year]) }}">‹</a>
                 <h3>{{ $current->translatedFormat('F Y') }}</h3>
-                <a href="{{ route('home', ['month' => $current->copy()->addMonth()->month, 'year' => $current->copy()->addMonth()->year]) }}#jadwal"
-                   aria-label="Bulan berikutnya">›</a>
+                <a href="{{ route('home', ['month' => $current->copy()->addMonth()->month, 'year' => $current->copy()->addMonth()->year]) }}">›</a>
             </div>
 
             <div class="calendar-grid">
@@ -151,11 +149,6 @@
                 <div class="calendar-day-name">Jum</div>
                 <div class="calendar-day-name">Sab</div>
                 <div class="calendar-day-name">Min</div>
-
-                {{-- Sel kosong sebelum tanggal 1 (Senin = 0, Minggu = 6) --}}
-                @for ($i = 0; $i < $current->copy()->startOfMonth()->dayOfWeekIso - 1; $i++)
-                    <div class="calendar-day"></div>
-                @endfor
 
                 @for ($i = 1; $i <= $daysInMonth; $i++)
                     <div class="calendar-day">
