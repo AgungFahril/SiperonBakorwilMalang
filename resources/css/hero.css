@@ -1,0 +1,71 @@
+/* === HERO SECTION (SIPERON) === */
+.hero {
+    padding: 80px 0 60px;
+    text-align: center;
+}
+.hero-content {
+    max-width: 720px;
+    margin: 0 auto;
+}
+.hero-label {
+    display: inline-block;
+    color: #1a9fe0;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+.hero h1 {
+    font-size: 64px;
+    font-weight: 800;
+    color: #2b2f33;
+    margin: 0 0 8px;
+    letter-spacing: 1px;
+}
+.hero h2 {
+    font-size: 28px;
+    font-weight: 500;
+    color: #3a3f44;
+    margin: 0 0 20px;
+}
+.hero p {
+    color: #6b7280;
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+}
+.btn-primary {
+    background: #1a9fe0;
+    color: #fff;
+    border: 1px solid #1a9fe0;
+}
+.btn-primary:hover {
+    background: #1587c2;
+}
+.btn-outline {
+    background: #fff;
+    color: #1a9fe0;
+    border: 1px solid #1a9fe0;
+}
+.btn-outline:hover {
+    background: #f0f9ff;
+}
+
+@media (max-width: 640px) {
+    .hero h1 { font-size: 42px; }
+    .hero h2 { font-size: 20px; }
+    .hero-actions { flex-direction: column; align-items: center; }
+}

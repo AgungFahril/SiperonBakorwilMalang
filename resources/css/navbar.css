@@ -1,0 +1,106 @@
+/* === TOPBAR (baris atas: sosmed & link) === */
+.topbar {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+.topbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #444;
+}
+.topbar-social a {
+    margin-right: 14px;
+    text-decoration: none;
+    color: #333;
+}
+.topbar-links a {
+    margin-left: 18px;
+    text-decoration: none;
+    color: #333;
+}
+
+/* === HEADER / BRAND (logo) === */
+.site-header {
+    padding: 20px 0 0;
+}
+.brand-row {
+    display: flex;
+    justify-content: center;
+}
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+}
+
+/* INI KUNCI PERBAIKAN UKURAN LOGO */
+.navbar-brand img.logo {
+    height: 64px;      /* atur tinggi logo di sini, bukan width */
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.brand-title {
+    font-weight: 800;
+    font-size: 28px;
+    color: #1a9fe0;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.brand-title .highlight {
+    color: #f7941d;
+}
+
+/* === NAVBAR (menu utama) === */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    margin-top: 24px;
+    padding: 14px 0;
+}
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+}
+.nav-menu a {
+    text-decoration: none;
+    color: #222;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .3px;
+}
+.nav-menu a.active,
+.nav-menu a:hover {
+    color: #1a9fe0;
+}
+.nav-cta {
+    background: #1a9fe0;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+}
+.nav-cta:hover {
+    background: #1587c2;
+}
+
+/* Responsif: logo & menu menyesuaikan di layar kecil */
+@media (max-width: 768px) {
+    .brand-row { flex-direction: column; text-align: center; }
+    .navbar-brand { flex-direction: column; }
+    .brand-title { font-size: 20px; white-space: normal; }
+    .navbar { flex-direction: column; gap: 14px; }
+    .nav-menu { flex-wrap: wrap; justify-content: center; gap: 14px; }
+}
