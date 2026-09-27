@@ -19,6 +19,9 @@ Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->
 /*
 |--------------------------------------------------------------------------
 | AUTH ROUTES - login & register
+| Catatan: ini baru menampilkan view saja, belum ada logic proses
+| login/register (POST). Nanti perlu ditambahkan Route::post untuk
+| memproses form-nya.
 |--------------------------------------------------------------------------
 */
 Route::get('/login', function () {
