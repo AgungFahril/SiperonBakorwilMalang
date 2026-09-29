@@ -27,6 +27,15 @@
             </div>
         @endif
 
+        @if(isset($settings['default_rules']))
+            <div style="background-color: #f8fafc; border-left: 4px solid var(--bakorwil-cyan); padding: 1.5rem; margin-bottom: 2rem; border-radius: 4px;">
+                <h4 style="margin-top: 0; color: var(--text-heading); font-size: 1.1rem; margin-bottom: 0.5rem;">Aturan Peminjaman:</h4>
+                <div style="color: var(--text-body); line-height: 1.6;">
+                    {!! nl2br(e($settings['default_rules'])) !!}
+                </div>
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('booking.store', $room) }}" class="booking-form">
             @csrf
 

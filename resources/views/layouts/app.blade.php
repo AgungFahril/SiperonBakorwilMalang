@@ -159,16 +159,15 @@
                 <h3>Kontak</h3>
 
                 <p>
-                    Jl. Simpang Ijen No. 2<br>
-                    Kota Malang, Jawa Timur
+                    {!! nl2br(e($settings['agency_address'] ?? "Jl. Simpang Ijen No. 2\nKota Malang, Jawa Timur")) !!}
                 </p>
 
                 <p>
-                    Telepon: (0341) XXXXXXX
+                    Telepon: {{ $settings['agency_phone'] ?? '(0341) 362222' }}
                 </p>
 
                 <p>
-                    Email: bakorwilmalang@jatimprov.go.id
+                    Email: {{ $settings['agency_email'] ?? 'bakorwil3@jatimprov.go.id' }}
                 </p>
 
             </div>
@@ -176,7 +175,7 @@
 
             <div class="footer-column">
 
-                <h3>Bakorwil III Malang</h3>
+                <h3>{{ $settings['agency_name'] ?? 'Bakorwil III Malang' }}</h3>
 
                 <p>
                     Pemerintah Provinsi Jawa Timur
