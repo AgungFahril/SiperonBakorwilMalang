@@ -20,6 +20,17 @@ class DatabaseSeeder extends Seeder
             [
                 'name'     => 'Admin Bakorwil',
                 'password' => Hash::make('password'),
+                'role'     => 'admin',
+            ]
+        );
+
+        // Buat regular user
+        User::updateOrCreate(
+            ['email' => 'user@bakorwil3.go.id'],
+            [
+                'name'     => 'Pengguna Umum',
+                'password' => Hash::make('password'),
+                'role'     => 'user',
             ]
         );
 

@@ -4,10 +4,18 @@
 @section('subtitle', 'Silakan masuk ke akun Anda')
 
 @section('content')
-<form class="auth-form" action="{{ url('/admin/dashboard') }}" method="GET">
+<form class="auth-form" action="{{ route('login.post') }}" method="POST">
+    @csrf
+
+    @if ($errors->any())
+        <div style="background: #fee2e2; color: #ef4444; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <div class="form-group">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" placeholder="Masukkan alamat email" required>
+        <input type="email" name="email" class="form-control" placeholder="Masukkan alamat email" value="{{ old('email') }}" required>
     </div>
     
     <div class="form-group">
@@ -15,7 +23,7 @@
             Password
             <a href="#" class="auth-link" style="font-size: 0.8rem; font-weight: 500;">Lupa Password?</a>
         </label>
-        <input type="password" class="form-control" placeholder="Masukkan password" required>
+        <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
     </div>
     
     <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">

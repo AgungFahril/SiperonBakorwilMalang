@@ -83,6 +83,32 @@
                     AJUKAN PEMINJAMAN
                 </a>
 
+                @guest
+                    <a href="{{ route('login') }}" class="nav-link" style="margin-left: auto;">
+                        LOGIN
+                    </a>
+                    <a href="{{ route('register') }}" class="nav-link">
+                        REGISTER
+                    </a>
+                @else
+                    <div style="margin-left: auto; display: flex; align-items: center; gap: 1rem;">
+                        <span style="color: var(--text-heading); font-weight: 500;">
+                            Hai, {{ Auth::user()->name }}
+                        </span>
+                        @if(Auth::user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link" style="background: var(--bakorwil-cyan); color: white; padding: 0.5rem 1rem; border-radius: 4px;">
+                                Admin Panel
+                            </a>
+                        @endif
+                        <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                            @csrf
+                            <button type="submit" style="background: none; border: none; color: #ef4444; font-weight: 600; cursor: pointer; padding: 0.5rem;">
+                                LOGOUT
+                            </button>
+                        </form>
+                    </div>
+                @endguest
+
             </div>
         </nav>
 
