@@ -50,6 +50,14 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" /></svg>
                 <span>Kembali ke Web</span>
             </a>
+            
+            <form action="{{ route('logout') }}" method="POST" style="margin-top: 0.5rem; padding: 0 1.5rem;">
+                @csrf
+                <button type="submit" class="nav-item" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer; color: #ef4444;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+                    <span>Logout</span>
+                </button>
+            </form>
         </nav>
     </aside>
 
@@ -71,10 +79,10 @@
                 
                 <div class="user-profile">
                     <div class="user-info" style="text-align: right;">
-                        <span class="user-name">Admin Bakorwil</span>
-                        <span class="user-role">Administrator</span>
+                        <span class="user-name">{{ Auth::user()->name }}</span>
+                        <span class="user-role">{{ Auth::user()->role == 'admin' ? 'Administrator' : 'Pengguna' }}</span>
                     </div>
-                    <img src="https://ui-avatars.com/api/?name=Admin+Bakorwil&background=0284c7&color=fff" alt="User Avatar" class="avatar">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0284c7&color=fff" alt="User Avatar" class="avatar">
                 </div>
             </div>
         </header>

@@ -4,25 +4,37 @@
 @section('subtitle', 'Buat akun baru untuk mengakses sistem')
 
 @section('content')
-<form class="auth-form" action="{{ url('/login') }}" method="GET">
+<form class="auth-form" action="{{ route('register.post') }}" method="POST">
+    @csrf
+
+    @if ($errors->any())
+        <div style="background: #fee2e2; color: #ef4444; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.85rem;">
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="form-group">
         <label class="form-label">Nama Lengkap</label>
-        <input type="text" class="form-control" placeholder="Masukkan nama lengkap Anda" required>
+        <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap Anda" value="{{ old('name') }}" required>
     </div>
     
     <div class="form-group">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" placeholder="Masukkan alamat email" required>
+        <input type="email" name="email" class="form-control" placeholder="Masukkan alamat email" value="{{ old('email') }}" required>
     </div>
     
     <div class="form-group">
         <label class="form-label">Password</label>
-        <input type="password" class="form-control" placeholder="Buat password (min. 8 karakter)" required>
+        <input type="password" name="password" class="form-control" placeholder="Buat password (min. 8 karakter)" required>
     </div>
     
     <div class="form-group">
         <label class="form-label">Konfirmasi Password</label>
-        <input type="password" class="form-control" placeholder="Ulangi password" required>
+        <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi password" required>
     </div>
     
     <div class="form-group" style="display: flex; align-items: flex-start; gap: 0.5rem;">

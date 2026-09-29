@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PeminjamanController;
 use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +14,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/ruangan/{room}/ajukan', [HomeController::class, 'bookingForm'])->name('booking.form');
-Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->name('booking.store');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/ruangan/{room}/ajukan', [HomeController::class, 'bookingForm'])->name('booking.form');
+    Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->name('booking.store');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -24,22 +29,20 @@ Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->
 | memproses form-nya.
 |--------------------------------------------------------------------------
 */
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/register', [AuthController::class, 'store'])->name('register.post');
+});
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
 
 /*
 |--------------------------------------------------------------------------
 | ADMIN ROUTES - Terhubung ke database
-| Sementara tanpa middleware auth agar bisa diakses langsung.
-| Aktifkan middleware(['auth']) setelah sistem login disiapkan.
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
