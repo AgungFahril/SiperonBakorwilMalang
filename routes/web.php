@@ -19,6 +19,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::get('/ruangan/{room}/ajukan', [HomeController::class, 'bookingForm'])->name('booking.form');
     Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->name('booking.store');
+    Route::get('/riwayat', [HomeController::class, 'riwayat'])->name('user.riwayat');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 

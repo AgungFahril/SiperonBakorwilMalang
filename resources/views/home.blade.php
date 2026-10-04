@@ -45,25 +45,33 @@
         <div class="process-grid">
             <div class="process-card">
                 <div class="process-number">01</div>
-                <div class="process-icon">🏢</div>
+                <div class="process-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #08a6d9;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+                </div>
                 <h3>Pilih Ruangan</h3>
                 <p>Pilih ruangan yang sesuai dengan kebutuhan kegiatan.</p>
             </div>
             <div class="process-card">
                 <div class="process-number">02</div>
-                <div class="process-icon">📅</div>
+                <div class="process-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #08a6d9;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
                 <h3>Periksa Jadwal</h3>
                 <p>Periksa ketersediaan ruangan berdasarkan tanggal dan waktu.</p>
             </div>
             <div class="process-card">
                 <div class="process-number">03</div>
-                <div class="process-icon">📝</div>
+                <div class="process-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #08a6d9;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
                 <h3>Isi Pengajuan</h3>
                 <p>Lengkapi data kegiatan dan dokumen persyaratan.</p>
             </div>
             <div class="process-card">
                 <div class="process-number">04</div>
-                <div class="process-icon">✓</div>
+                <div class="process-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #08a6d9;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
                 <h3>Tunggu Persetujuan</h3>
                 <p>Pengajuan akan diperiksa dan dikonfirmasi oleh pengelola.</p>
             </div>
@@ -133,38 +141,8 @@
             <p>Periksa jadwal penggunaan ruangan sebelum mengajukan peminjaman.</p>
         </div>
 
-        <div class="calendar-wrapper">
-
-            <div class="calendar-header">
-                <a href="{{ route('home', ['month' => $current->copy()->subMonth()->month, 'year' => $current->copy()->subMonth()->year]) }}">‹</a>
-                <h3>{{ $current->translatedFormat('F Y') }}</h3>
-                <a href="{{ route('home', ['month' => $current->copy()->addMonth()->month, 'year' => $current->copy()->addMonth()->year]) }}">›</a>
-            </div>
-
-            <div class="calendar-grid">
-                <div class="calendar-day-name">Sen</div>
-                <div class="calendar-day-name">Sel</div>
-                <div class="calendar-day-name">Rab</div>
-                <div class="calendar-day-name">Kam</div>
-                <div class="calendar-day-name">Jum</div>
-                <div class="calendar-day-name">Sab</div>
-                <div class="calendar-day-name">Min</div>
-
-                @for ($i = 1; $i <= $daysInMonth; $i++)
-                    <div class="calendar-day">
-                        <span>{{ $i }}</span>
-                        @if ($bookedDays->contains($i))
-                            <small class="calendar-event">Terpakai</small>
-                        @endif
-                    </div>
-                @endfor
-            </div>
-
-            <div class="calendar-legend">
-                <span><i class="legend available"></i> Tersedia</span>
-                <span><i class="legend booked"></i> Terjadwal</span>
-            </div>
-
+        <div class="calendar-wrapper" id="calendar-container">
+            @include('partials.calendar')
         </div>
     </div>
 </section>
@@ -187,4 +165,90 @@
     </div>
 </section>
 
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarContainer = document.getElementById('calendar-container');
+
+        calendarContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('calendar-nav-btn')) {
+                e.preventDefault();
+                
+                const month = e.target.getAttribute('data-month');
+                const year = e.target.getAttribute('data-year');
+                
+                fetch(`/?month=${month}&year=${year}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => { calendarContainer.innerHTML = html; })
+                .catch(error => console.error('Error fetching calendar:', error));
+            }
+        });
+
+        // ScrollSpy functionality
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section, footer');
+
+        // Initial click handler
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Intersection Observer for scrolling
+        const observerOptions = {
+            root: null,
+            rootMargin: '-50% 0px -50% 0px', // Trigger exactly in the middle of viewport
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    if (id) {
+                        // Special case: if we are at the very top, highlight BERANDA instead of TENTANG
+                        const scrollPos = window.scrollY;
+                        
+                        navLinks.forEach(nav => {
+                            nav.classList.remove('active');
+                            const href = nav.getAttribute('href');
+                            
+                            if (scrollPos < 100 && id === 'tentang') {
+                                if (href === '{{ url('/') }}') nav.classList.add('active');
+                            } else {
+                                if (href && href.endsWith('#' + id)) {
+                                    nav.classList.add('active');
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            if (section.getAttribute('id')) {
+                observer.observe(section);
+            }
+        });
+        
+        // Listen to scroll to handle the absolute top position
+        window.addEventListener('scroll', function() {
+            if (window.scrollY < 100) {
+                navLinks.forEach(nav => {
+                    nav.classList.remove('active');
+                    if (nav.getAttribute('href') === '{{ url('/') }}') {
+                        nav.classList.add('active');
+                    }
+                });
+            }
+        });
+    });
+</script>
 @endsection

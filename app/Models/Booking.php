@@ -12,6 +12,7 @@ class Booking extends Model
 
     protected $fillable = [
         'room_id',
+        'user_id',
         'nama_kegiatan',
         'nama_pemohon',
         'instansi',
@@ -21,6 +22,7 @@ class Booking extends Model
         'jam_selesai',
         'status',
         'catatan',
+        'surat_pengajuan',
     ];
 
     protected $casts = [

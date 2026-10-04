@@ -64,7 +64,6 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Instansi / Peminjam</th>
                         <th>Ruangan</th>
                         <th>Tanggal Acara</th>
@@ -75,7 +74,6 @@
                 <tbody>
                     @forelse($recentBookings as $booking)
                     <tr>
-                        <td>#PMJ-{{ str_pad($booking->id, 3, '0', STR_PAD_LEFT) }}</td>
                         <td>
                             <strong>{{ $booking->instansi ?? '-' }}</strong><br>
                             <span style="color: var(--text-muted); font-size: 0.75rem;">{{ $booking->nama_pemohon }}</span>
@@ -119,7 +117,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">
                             Belum ada data peminjaman.
                         </td>
                     </tr>

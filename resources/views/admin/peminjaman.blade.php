@@ -62,6 +62,7 @@
                         <th>Tanggal Acara</th>
                         <th>Waktu</th>
                         <th>Keperluan</th>
+                        <th>Surat</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
@@ -78,6 +79,15 @@
                         <td>{{ $booking->tanggal->translatedFormat('d M Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
                         <td><span class="purpose-text">{{ $booking->nama_kegiatan }}</span></td>
+                        <td>
+                            @if($booking->surat_pengajuan)
+                                <a href="{{ asset('storage/' . $booking->surat_pengajuan) }}" target="_blank" title="Lihat PDF" style="color: #dc2626; display: inline-flex; align-items: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                                </a>
+                            @else
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">-</span>
+                            @endif
+                        </td>
                         <td>
                             @if($booking->status === 'pending')
                                 <span class="status-badge status-pending">Menunggu</span>
@@ -118,7 +128,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">
                             Belum ada data peminjaman.
                         </td>
                     </tr>
@@ -279,6 +289,17 @@
                         <div>
                             <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Catatan</span>
                             <div style="font-size: 0.9rem; color: var(--text-main); margin-top: 0.25rem; line-height: 1.6;">{{ $booking->catatan }}</div>
+                        </div>
+                        @endif
+                        @if($booking->surat_pengajuan)
+                        <div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Surat Pengajuan</span>
+                            <div style="margin-top: 0.35rem;">
+                                <a href="{{ asset('storage/' . $booking->surat_pengajuan) }}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #fef2f2; color: #dc2626; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; transition: 0.2s;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                                    Lihat / Download PDF
+                                </a>
+                            </div>
                         </div>
                         @endif
                         <div>
