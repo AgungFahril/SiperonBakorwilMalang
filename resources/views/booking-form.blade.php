@@ -36,7 +36,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('booking.store', $room) }}" class="booking-form">
+        <form method="POST" action="{{ route('booking.store', $room) }}" class="booking-form" enctype="multipart/form-data">
             @csrf
 
             <div class="form-row">
@@ -49,7 +49,7 @@
                 <div class="form-group">
                     <label for="nama_pemohon">Nama Pemohon</label>
                     <input type="text" id="nama_pemohon" name="nama_pemohon"
-                           value="{{ old('nama_pemohon') }}" placeholder="Nama lengkap Anda" required>
+                           value="{{ old('nama_pemohon', Auth::check() ? Auth::user()->name : '') }}" placeholder="Nama lengkap Anda" required>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
                 <div class="form-group">
                     <label for="kontak">Kontak (No. HP / Email)</label>
                     <input type="text" id="kontak" name="kontak"
-                           value="{{ old('kontak') }}" placeholder="08xxxxxxxxxx atau email@contoh.com">
+                           value="{{ old('kontak', Auth::check() ? Auth::user()->email : '') }}" placeholder="08xxxxxxxxxx atau email@contoh.com">
                 </div>
             </div>
 
@@ -82,6 +82,11 @@
                     <label for="jam_selesai">Jam Selesai</label>
                     <input type="time" id="jam_selesai" name="jam_selesai" value="{{ old('jam_selesai') }}" required>
                 </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <label for="surat_pengajuan">Upload Surat Pengajuan (Wajib, format PDF, maksimal 15MB)</label>
+                <input type="file" id="surat_pengajuan" name="surat_pengajuan" accept="application/pdf" style="padding-top: 12px;" required>
             </div>
 
             <div class="form-actions">

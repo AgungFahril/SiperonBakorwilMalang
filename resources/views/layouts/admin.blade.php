@@ -13,7 +13,9 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar">
         <div class="sidebar-header">
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
+            <a href="{{ route('admin.dashboard') }}" class="sidebar-brand" style="display: flex; align-items: center; gap: 0.75rem;">
+                <!-- ⬇️ TEMPLATE LOGO: Ganti URL src di bawah ini dengan logo yang diinginkan ⬇️ -->
+                <img src="{{ asset('images/logo-bakorwil.png') }}" alt="Logo SIPERON" style="height: 36px; width: auto; object-fit: contain;">
                 <span>SIPERON</span>
             </a>
         </div>
