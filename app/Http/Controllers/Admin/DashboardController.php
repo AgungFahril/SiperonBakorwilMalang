@@ -12,6 +12,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Auto update status 'disetujui' menjadi 'selesai' jika tanggalnya sudah lewat
+        Booking::where('status', 'disetujui')
+            ->whereDate('tanggal', '<', now()->toDateString())
+            ->update(['status' => 'selesai']);
         $totalRooms     = Room::count();
         $pendingCount   = Booking::where('status', 'pending')->count();
         $todayBookings  = Booking::where('status', 'disetujui')

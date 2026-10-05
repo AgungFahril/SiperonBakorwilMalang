@@ -70,7 +70,7 @@
             <div class="form-row form-row-3">
                 <div class="form-group">
                     <label for="tanggal">Tanggal</label>
-                    <input type="date" id="tanggal" name="tanggal" value="{{ old('tanggal') }}" required>
+                    <input type="date" id="tanggal" name="tanggal" value="{{ old('tanggal') }}" min="{{ \Carbon\Carbon::now()->addDays(3)->format('Y-m-d') }}" required>
                 </div>
 
                 <div class="form-group">

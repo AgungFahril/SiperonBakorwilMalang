@@ -14,6 +14,11 @@ class PeminjamanController extends Controller
      */
     public function index(Request $request)
     {
+        // Auto update status 'disetujui' menjadi 'selesai' jika tanggalnya sudah lewat
+        Booking::where('status', 'disetujui')
+            ->whereDate('tanggal', '<', now()->toDateString())
+            ->update(['status' => 'selesai']);
+
         $status = $request->get('status'); // pending|disetujui|ditolak|selesai
 
         $query = Booking::with('room')->latest();

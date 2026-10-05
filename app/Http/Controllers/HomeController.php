@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function __construct()
+    {
+        // Auto update status 'disetujui' menjadi 'selesai' jika tanggalnya sudah lewat
+        Booking::where('status', 'disetujui')
+            ->whereDate('tanggal', '<', now()->toDateString())
+            ->update(['status' => 'selesai']);
+    }
+
     public function index(Request $request)
     {
         $rooms = Room::where('is_active', true)->get();
@@ -41,19 +49,23 @@ class HomeController extends Controller
             }
         }
 
+        $startDayOffset = $current->dayOfWeekIso - 1; // 0 for Monday, 6 for Sunday
+
         if ($request->ajax()) {
             return view('partials.calendar', [
-                'current'      => $current,
-                'daysInMonth'  => $daysInMonth,
-                'bookedDays'   => $bookedDays,
+                'current'        => $current,
+                'daysInMonth'    => $daysInMonth,
+                'bookedDays'     => $bookedDays,
+                'startDayOffset' => $startDayOffset,
             ]);
         }
 
         return view('home', [
-            'rooms'        => $rooms,
-            'current'      => $current,
-            'daysInMonth'  => $daysInMonth,
-            'bookedDays'   => $bookedDays,
+            'rooms'          => $rooms,
+            'current'        => $current,
+            'daysInMonth'    => $daysInMonth,
+            'bookedDays'     => $bookedDays,
+            'startDayOffset' => $startDayOffset,
         ]);
     }
 
@@ -71,7 +83,7 @@ class HomeController extends Controller
             'nama_pemohon'    => 'required|string|max:255',
             'instansi'        => 'nullable|string|max:255',
             'kontak'          => 'nullable|string|max:50',
-            'tanggal'         => 'required|date|after_or_equal:today',
+            'tanggal'         => 'required|date|after_or_equal:' . \Carbon\Carbon::now()->addDays(3)->format('Y-m-d'),
             'jam_mulai'       => 'required',
             'jam_selesai'     => 'required|after:jam_mulai',
             'surat_pengajuan' => 'required|file|mimes:pdf|max:15360',
