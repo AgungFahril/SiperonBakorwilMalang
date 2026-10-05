@@ -13,6 +13,10 @@
                 <div class="calendar-day-name">Sab</div>
                 <div class="calendar-day-name">Min</div>
 
+                @for ($i = 0; $i < $startDayOffset; $i++)
+                    <div class="calendar-day empty" style="background: transparent; border: none;"></div>
+                @endfor
+
                 @for ($i = 1; $i <= $daysInMonth; $i++)
                     <div class="calendar-day">
                         <span>{{ $i }}</span>

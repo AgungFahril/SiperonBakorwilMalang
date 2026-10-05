@@ -210,6 +210,42 @@ img {
     width: 100%;
 }
 
+/* Auth Buttons Navbar */
+.nav-auth-btn {
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease-in-out;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.nav-auth-btn-outline {
+    border: 2px solid #08a6d9;
+    color: #08a6d9;
+    background: transparent;
+}
+
+.nav-auth-btn-outline:hover {
+    background: #08a6d9;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.2);
+}
+
+.nav-auth-btn-primary {
+    background: linear-gradient(135deg, #08a6d9, #18b9e6);
+    color: #ffffff;
+    border: 2px solid transparent;
+}
+
+.nav-auth-btn-primary:hover {
+    background: linear-gradient(135deg, #068ebf, #08a6d9);
+    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.3);
+    transform: translateY(-1px);
+}
+
 .nav-button {
     padding: 11px 18px;
     border-radius: 5px;

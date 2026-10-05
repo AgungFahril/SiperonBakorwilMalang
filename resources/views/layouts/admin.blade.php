@@ -15,7 +15,7 @@
         <div class="sidebar-header">
             <a href="{{ route('admin.dashboard') }}" class="sidebar-brand" style="display: flex; align-items: center; gap: 0.75rem;">
                 <!-- ⬇️ TEMPLATE LOGO: Ganti URL src di bawah ini dengan logo yang diinginkan ⬇️ -->
-                <img src="{{ asset('images/logo-bakorwil.png') }}" alt="Logo SIPERON" style="height: 36px; width: auto; object-fit: contain;">
+                <img src="{{ asset('images/logo_bakorwil.png') }}" alt="Logo SIPERON" style="height: 48px; width: auto; object-fit: contain;">
                 <span>SIPERON</span>
             </a>
         </div>
@@ -48,16 +48,13 @@
             
             <div style="flex: 1"></div>
             
-            <a href="{{ route('home') }}" class="nav-item" style="color: var(--text-muted);">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" /></svg>
-                <span>Kembali ke Web</span>
-            </a>
+
             
             <form action="{{ route('logout') }}" method="POST" style="margin-top: 0.5rem; padding: 0 1.5rem;">
                 @csrf
                 <button type="submit" class="nav-item" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer; color: #ef4444;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
-                    <span>Logout</span>
+                    <span>Keluar</span>
                 </button>
             </form>
         </nav>
@@ -74,9 +71,14 @@
             </div>
             
             <div class="header-actions">
-                <button class="action-btn">
+                <button class="action-btn" title="Peminjaman Menunggu Konfirmasi" onclick="window.location.href='{{ route('admin.peminjaman.index', ['status' => 'pending']) }}'">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
-                    <span class="badge">3</span>
+                    @php
+                        $pendingCount = \App\Models\Booking::where('status', 'pending')->count();
+                    @endphp
+                    @if($pendingCount > 0)
+                        <span class="badge">{{ $pendingCount }}</span>
+                    @endif
                 </button>
                 
                 <div class="user-profile">
