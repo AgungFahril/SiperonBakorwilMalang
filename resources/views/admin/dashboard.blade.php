@@ -29,21 +29,21 @@
         
         <div class="stat-card">
             <div class="stat-icon icon-green">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
             </div>
             <div class="stat-info">
-                <span class="stat-label">Peminjaman Hari Ini</span>
-                <span class="stat-value">{{ $todayBookings }}</span>
+                <span class="stat-label">Peminjaman Disetujui</span>
+                <span class="stat-value">{{ $approvedCount }}</span>
             </div>
         </div>
         
         <div class="stat-card">
             <div class="stat-icon icon-purple">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
             </div>
             <div class="stat-info">
-                <span class="stat-label">Total Pengguna</span>
-                <span class="stat-value">{{ $totalUsers }}</span>
+                <span class="stat-label">Jadwal Ulang</span>
+                <span class="stat-value">{{ $rescheduleCount }}</span>
             </div>
         </div>
     </div>
@@ -64,7 +64,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Instansi / Peminjam</th>
+                        <th>Kode / Peminjam</th>
                         <th>Ruangan</th>
                         <th>Tanggal Acara</th>
                         <th>Status</th>
@@ -75,8 +75,11 @@
                     @forelse($recentBookings as $booking)
                     <tr>
                         <td>
-                            <strong>{{ $booking->instansi ?? '-' }}</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.75rem;">{{ $booking->nama_pemohon }}</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong style="color: #08a6d9; letter-spacing: 0.5px;">{{ $booking->kode_booking ?? '#PMJ-'.$booking->id }}</strong>
+                            </div>
+                            <div style="font-weight: 600; color: var(--text-main); font-size: 0.85rem; margin-top: 2px;">{{ $booking->nama_pemohon }}</div>
+                            <span style="color: var(--text-muted); font-size: 0.75rem;">{{ $booking->instansi ?? '-' }}</span>
                         </td>
                         <td>{{ $booking->room->name ?? '-' }}</td>
                         <td>{{ $booking->tanggal->translatedFormat('d M Y') }}<br><span style="color: var(--text-muted); font-size: 0.75rem;">{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</span></td>
@@ -87,12 +90,14 @@
                                 <span class="status-badge status-approved">Disetujui</span>
                             @elseif($booking->status === 'ditolak')
                                 <span class="status-badge status-rejected">Ditolak</span>
+                            @elseif($booking->status === 'dijadwalkan_ulang')
+                                <span class="status-badge" style="background: #e0e7ff; color: #3730a3; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.75rem;">Jadwal Ulang</span>
                             @else
                                 <span class="status-badge status-done">Selesai</span>
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('admin.peminjaman.index') }}" class="action-btn" title="Detail">
+                            <a href="{{ route('admin.peminjaman.show', $booking) }}" class="action-btn" title="Detail Peminjaman">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
                             </a>
                             @if($booking->status === 'pending')

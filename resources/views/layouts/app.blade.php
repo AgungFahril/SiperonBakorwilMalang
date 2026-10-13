@@ -92,46 +92,32 @@
                     AJUKAN PEMINJAMAN
                 </a>
 
-                @guest
-                    <div style="margin-left: auto; display: flex; gap: 12px; align-items: center;">
-                        <a href="{{ route('login') }}" class="nav-auth-btn nav-auth-btn-outline">
-                            MASUK
-                        </a>
-                        <a href="{{ route('register') }}" class="nav-auth-btn nav-auth-btn-primary">
-                            DAFTAR
-                        </a>
-                    </div>
-                @else
-                    @if(Auth::user()->isAdmin())
-                        <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                            PANEL ADMIN
-                        </a>
-                    @else
-                        <a href="{{ route('user.riwayat') }}" class="nav-link">
-                            RIWAYAT PEMINJAMAN
-                        </a>
-                    @endif
-                    
-                    <div class="user-dropdown-container" style="margin-left: auto; position: relative; padding: 10px 0;">
-                        <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                            <div style="text-align: right; line-height: 1.2;">
-                                <span style="display: block; font-weight: bold; color: #171717; font-size: 14px;">{{ Auth::user()->name }}</span>
-                                <span style="display: block; font-size: 12px; color: #666;">{{ Auth::user()->role == 'admin' ? 'Administrator' : 'Pengguna' }}</span>
+                <div style="margin-left: auto; display: flex; gap: 12px; align-items: center;">
+                    <a href="{{ route('cek.booking.form') }}" class="nav-auth-btn nav-auth-btn-outline">
+                        CEK BOOKING
+                    </a>
+                    @auth
+                        @if(Auth::user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="nav-auth-btn nav-auth-btn-primary">
+                                PANEL ADMIN
+                            </a>
+                        @endif
+                        <div class="user-dropdown-container" style="position: relative; padding: 10px 0;">
+                            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=08a6d9&color=fff" alt="User Avatar" style="width: 42px; height: 42px; border-radius: 50%;">
                             </div>
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=08a6d9&color=fff" alt="User Avatar" style="width: 42px; height: 42px; border-radius: 50%;">
+                            <div class="user-dropdown-menu">
+                                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+                                        Keluar
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        
-                        <div class="user-dropdown-menu">
-                            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-                                @csrf
-                                <button type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
-                                    Keluar
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @endguest
+                    @endauth
+                </div>
 
             </div>
         </nav>
@@ -218,12 +204,19 @@
 
         <div class="footer-bottom">
 
-            <div class="container">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
 
-                <p>
-                    © {{ date('Y') }} SIPERON Bakorwil III Malang.
-                    Semua hak dilindungi.
+                <p style="margin: 0;">
+                    © {{ date('Y') }} SIPERON Bakorwil III Malang. Semua hak dilindungi.
                 </p>
+
+                <div>
+                    @guest
+                        <a href="{{ route('login') }}" style="color: inherit; text-decoration: none; opacity: 0.6; font-size: 0.8rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">Portal Admin 🔒</a>
+                    @else
+                        <a href="{{ route('admin.dashboard') }}" style="color: inherit; text-decoration: none; opacity: 0.8; font-size: 0.8rem; font-weight: 600;">Panel Admin →</a>
+                    @endguest
+                </div>
 
             </div>
 

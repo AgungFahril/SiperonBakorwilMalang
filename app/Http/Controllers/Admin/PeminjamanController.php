@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingHistory;
 use App\Models\Room;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class PeminjamanController extends Controller
@@ -19,11 +21,11 @@ class PeminjamanController extends Controller
             ->whereDate('tanggal', '<', now()->toDateString())
             ->update(['status' => 'selesai']);
 
-        $status = $request->get('status'); // pending|disetujui|ditolak|selesai
+        $status = $request->get('status');
 
         $query = Booking::with('room')->latest();
 
-        if ($status && in_array($status, ['pending', 'disetujui', 'ditolak', 'selesai'])) {
+        if ($status && in_array($status, ['pending', 'disetujui', 'ditolak', 'dijadwalkan_ulang', 'selesai'])) {
             $query->where('status', $status);
         }
 
@@ -32,7 +34,8 @@ class PeminjamanController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('nama_pemohon', 'like', "%{$search}%")
                   ->orWhere('instansi', 'like', "%{$search}%")
-                  ->orWhere('nama_kegiatan', 'like', "%{$search}%");
+                  ->orWhere('nama_kegiatan', 'like', "%{$search}%")
+                  ->orWhere('kode_booking', 'like', "%{$search}%");
             });
         }
 
@@ -40,16 +43,26 @@ class PeminjamanController extends Controller
 
         // Hitung per status untuk tab counts
         $counts = [
-            'all'       => Booking::count(),
-            'pending'   => Booking::where('status', 'pending')->count(),
-            'disetujui' => Booking::where('status', 'disetujui')->count(),
-            'ditolak'   => Booking::where('status', 'ditolak')->count(),
-            'selesai'   => Booking::where('status', 'selesai')->count(),
+            'all'                 => Booking::count(),
+            'pending'             => Booking::where('status', 'pending')->count(),
+            'disetujui'           => Booking::where('status', 'disetujui')->count(),
+            'dijadwalkan_ulang'   => Booking::where('status', 'dijadwalkan_ulang')->count(),
+            'ditolak'             => Booking::where('status', 'ditolak')->count(),
+            'selesai'             => Booking::where('status', 'selesai')->count(),
         ];
 
         $rooms = Room::where('is_active', true)->orderBy('name')->get();
 
         return view('admin.peminjaman', compact('bookings', 'counts', 'rooms', 'status'));
+    }
+
+    /**
+     * Tampilkan detail booking.
+     */
+    public function show(Booking $booking)
+    {
+        $booking->load(['room', 'histories.admin', 'admin']);
+        return view('admin.peminjaman-detail', compact('booking'));
     }
 
     /**
@@ -61,7 +74,8 @@ class PeminjamanController extends Controller
             'room_id'        => 'required|exists:rooms,id',
             'nama_pemohon'   => 'required|string|max:255',
             'instansi'       => 'nullable|string|max:255',
-            'kontak'         => 'nullable|string|max:50',
+            'no_whatsapp'    => 'required|string|max:20',
+            'email'          => 'required|email|max:255',
             'nama_kegiatan'  => 'required|string|max:255',
             'tanggal'        => 'required|date',
             'jam_mulai'      => 'required',
@@ -71,12 +85,29 @@ class PeminjamanController extends Controller
         ]);
 
         $data['status'] = $data['status'] ?? 'pending';
+        $data['kode_booking'] = Booking::generateKodeBooking();
+        $data['kontak'] = $data['no_whatsapp'];
 
-        Booking::create($data);
+        if ($data['status'] === 'disetujui') {
+            $data['admin_id'] = auth()->id();
+            $data['approved_at'] = now();
+        }
+
+        $booking = Booking::create($data);
+
+        // Catat riwayat
+        BookingHistory::create([
+            'booking_id'       => $booking->id,
+            'status_sebelumnya' => null,
+            'status_baru'      => $data['status'],
+            'tanggal_baru'     => $booking->tanggal,
+            'perubahan'        => 'Peminjaman dibuat oleh admin',
+            'admin_id'         => auth()->id(),
+        ]);
 
         return redirect()
             ->route('admin.peminjaman.index')
-            ->with('success', 'Peminjaman berhasil ditambahkan.');
+            ->with('success', 'Peminjaman berhasil ditambahkan. Kode: ' . $booking->kode_booking);
     }
 
     /**
@@ -89,11 +120,70 @@ class PeminjamanController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
+        $oldStatus = $booking->status;
+
+        if ($data['status'] === 'disetujui') {
+            $data['admin_id'] = auth()->id();
+            $data['approved_at'] = now();
+        }
+
         $booking->update($data);
+
+        // Catat riwayat
+        BookingHistory::create([
+            'booking_id'        => $booking->id,
+            'status_sebelumnya' => $oldStatus,
+            'status_baru'       => $data['status'],
+            'tanggal_sebelumnya' => $booking->tanggal,
+            'perubahan'         => $data['catatan'] ?? null,
+            'admin_id'          => auth()->id(),
+        ]);
+
+        // Notifikasi ke pemohon
+        $notificationService = new NotificationService();
+        $notificationService->notifyPemohonStatusChange($booking, $data['status'], $data['catatan'] ?? null);
 
         return redirect()
             ->route('admin.peminjaman.index')
-            ->with('success', 'Status peminjaman berhasil diubah.');
+            ->with('success', 'Status peminjaman berhasil diubah menjadi ' . ucfirst(str_replace('_', ' ', $data['status'])) . '.');
+    }
+
+    /**
+     * Minta penjadwalan ulang.
+     */
+    public function reschedule(Request $request, Booking $booking)
+    {
+        $data = $request->validate([
+            'alasan' => 'required|string|max:1000',
+        ]);
+
+        $oldStatus = $booking->status;
+
+        // Update status booking
+        $booking->update([
+            'status' => 'dijadwalkan_ulang',
+        ]);
+
+        // Catat riwayat
+        BookingHistory::create([
+            'booking_id'            => $booking->id,
+            'status_sebelumnya'     => $oldStatus,
+            'status_baru'           => 'dijadwalkan_ulang',
+            'tanggal_sebelumnya'    => $booking->tanggal,
+            'jam_mulai_sebelumnya'  => $booking->jam_mulai,
+            'jam_selesai_sebelumnya' => $booking->jam_selesai,
+            'alasan'                => $data['alasan'],
+            'perubahan'             => 'Diminta penjadwalan ulang karena kegiatan prioritas instansi',
+            'admin_id'              => auth()->id(),
+        ]);
+
+        // Notifikasi ke pemohon
+        $notificationService = new NotificationService();
+        $notificationService->notifyPemohonStatusChange($booking, 'dijadwalkan_ulang', $data['alasan']);
+
+        return redirect()
+            ->route('admin.peminjaman.index')
+            ->with('success', 'Booking ' . $booking->kode_booking . ' telah diminta penjadwalan ulang.');
     }
 
     /**

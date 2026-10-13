@@ -36,13 +36,14 @@
             <a href="{{ route('admin.peminjaman.index') }}" class="filter-tab {{ !$status ? 'active' : '' }}">Semua <span class="tab-count">{{ $counts['all'] }}</span></a>
             <a href="{{ route('admin.peminjaman.index', ['status' => 'pending']) }}" class="filter-tab {{ $status === 'pending' ? 'active' : '' }}">Menunggu <span class="tab-count">{{ $counts['pending'] }}</span></a>
             <a href="{{ route('admin.peminjaman.index', ['status' => 'disetujui']) }}" class="filter-tab {{ $status === 'disetujui' ? 'active' : '' }}">Disetujui <span class="tab-count">{{ $counts['disetujui'] }}</span></a>
+            <a href="{{ route('admin.peminjaman.index', ['status' => 'dijadwalkan_ulang']) }}" class="filter-tab {{ $status === 'dijadwalkan_ulang' ? 'active' : '' }}">Jadwal Ulang <span class="tab-count">{{ $counts['dijadwalkan_ulang'] }}</span></a>
             <a href="{{ route('admin.peminjaman.index', ['status' => 'ditolak']) }}" class="filter-tab {{ $status === 'ditolak' ? 'active' : '' }}">Ditolak <span class="tab-count">{{ $counts['ditolak'] }}</span></a>
             <a href="{{ route('admin.peminjaman.index', ['status' => 'selesai']) }}" class="filter-tab {{ $status === 'selesai' ? 'active' : '' }}">Selesai <span class="tab-count">{{ $counts['selesai'] }}</span></a>
         </div>
         <div class="filter-actions">
             <form action="{{ route('admin.peminjaman.index') }}" method="GET" class="search-input">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
-                <input type="text" name="search" placeholder="Cari peminjam, instansi..." value="{{ request('search') }}">
+                <input type="text" name="search" placeholder="Cari peminjam, instansi, kode..." value="{{ request('search') }}">
                 @if($status)
                     <input type="hidden" name="status" value="{{ $status }}">
                 @endif
@@ -57,7 +58,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Instansi / Peminjam</th>
+                        <th>Kode / Peminjam</th>
                         <th>Ruangan</th>
                         <th>Tanggal Acara</th>
                         <th>Waktu</th>
@@ -72,8 +73,11 @@
                     <tr>
                         <td>{{ $bookings->firstItem() + $index }}</td>
                         <td>
-                            <div class="cell-main">{{ $booking->instansi ?? '-' }}</div>
-                            <div class="cell-sub">{{ $booking->nama_pemohon }}</div>
+                            <a href="{{ route('admin.peminjaman.show', $booking) }}" style="font-weight: 700; color: #08a6d9; text-decoration: none; letter-spacing: 0.5px;">
+                                {{ $booking->kode_booking ?? '#PMJ-'.$booking->id }}
+                            </a>
+                            <div class="cell-main" style="margin-top: 2px;">{{ $booking->nama_pemohon }}</div>
+                            <div class="cell-sub">{{ $booking->instansi ?? '-' }}</div>
                         </td>
                         <td>{{ $booking->room->name ?? '-' }}</td>
                         <td>{{ $booking->tanggal->translatedFormat('d M Y') }}</td>
@@ -95,16 +99,18 @@
                                 <span class="status-badge status-approved">Disetujui</span>
                             @elseif($booking->status === 'ditolak')
                                 <span class="status-badge status-rejected">Ditolak</span>
+                            @elseif($booking->status === 'dijadwalkan_ulang')
+                                <span class="status-badge" style="background: #e0e7ff; color: #3730a3; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.75rem;">Jadwal Ulang</span>
                             @else
                                 <span class="status-badge status-done">Selesai</span>
                             @endif
                         </td>
                         <td>
                             <div class="action-group">
-                                <!-- Detail Button -->
-                                <button class="table-action-btn" title="Detail" data-modal-target="modalDetail{{ $booking->id }}">
+                                <!-- Detail Page Link -->
+                                <a href="{{ route('admin.peminjaman.show', $booking) }}" class="table-action-btn" title="Detail & Riwayat">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
-                                </button>
+                                </a>
                                 @if($booking->status === 'pending')
                                     <!-- Setujui Button -->
                                     <button class="table-action-btn action-approve" title="Setujui" data-modal-target="modalSetuju{{ $booking->id }}">
@@ -197,9 +203,23 @@
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label">No WhatsApp</label>
+                            <input type="text" name="no_whatsapp" class="form-control" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label class="form-label">Kontak (HP/WA)</label>
-                        <input type="text" name="kontak" class="form-control" placeholder="08xxxxxxxxxx">
+                        <label class="form-label">Status Awal</label>
+                        <select name="status" class="form-control">
+                            <option value="pending">Menunggu Persetujuan</option>
+                            <option value="disetujui" selected>Langsung Disetujui</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">

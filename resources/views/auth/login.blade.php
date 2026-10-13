@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Masuk - SIPERON')
-@section('subtitle', 'Silakan masuk ke akun Anda')
+@section('title', 'Login Administrator - SIPERON')
+@section('subtitle', 'Portal khusus petugas / pengelola ruangan')
 
 @section('content')
 <form class="auth-form" action="{{ route('login.post') }}" method="POST">
@@ -14,15 +14,12 @@
     @endif
 
     <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" name="email" class="form-control" placeholder="Masukkan alamat email" value="{{ old('email') }}" required>
+        <label class="form-label">Email Administrator</label>
+        <input type="email" name="email" class="form-control" placeholder="admin@siperon.go.id" value="{{ old('email') }}" required autofocus>
     </div>
     
     <div class="form-group">
-        <label class="form-label" style="display: flex; justify-content: space-between;">
-            Kata Sandi
-            <a href="#" class="auth-link" style="font-size: 0.8rem; font-weight: 500;">Lupa Kata Sandi?</a>
-        </label>
+        <label class="form-label">Kata Sandi</label>
         <div style="position: relative;">
             <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan kata sandi" required style="padding-right: 40px;">
             <button type="button" onclick="togglePassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #6b7280; padding: 0;">
@@ -40,17 +37,15 @@
     </div>
     
     <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
-        <input type="checkbox" id="remember" style="accent-color: var(--bakorwil-cyan); width: 16px; height: 16px;">
+        <input type="checkbox" id="remember" name="remember" style="accent-color: var(--bakorwil-cyan); width: 16px; height: 16px;">
         <label for="remember" style="font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">Ingat Saya</label>
     </div>
     
-    <button type="submit" class="auth-button">Masuk</button>
+    <button type="submit" class="auth-button">Masuk ke Panel Admin</button>
 </form>
 
-<div class="auth-divider">ATAU</div>
-
-<div class="auth-footer">
-    Belum punya akun? <a href="{{ url('/register') }}" class="auth-link">Daftar Sekarang</a>
+<div class="auth-footer" style="margin-top: 1.5rem; text-align: center;">
+    <a href="{{ route('home') }}" class="auth-link" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem;">← Kembali ke Beranda Publik</a>
 </div>
 
 <script>

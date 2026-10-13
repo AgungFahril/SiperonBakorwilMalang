@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -24,42 +22,21 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Redirect based on role
+            // Admin langsung ke dashboard
             if (Auth::user()->isAdmin()) {
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->intended('/');
+            // Non-admin tidak diperbolehkan login
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Akun Anda bukan administrator.',
+            ])->onlyInput('email');
         }
 
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');
-    }
-
-    public function register()
-    {
-        return view('auth.register');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user', // Default role is user
-        ]);
-
-        Auth::login($user);
-
-        return redirect('/');
     }
 
     public function logout(Request $request)
