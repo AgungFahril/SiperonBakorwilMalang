@@ -63,5 +63,44 @@
 
             </div>
         </div>
+
+        <!-- Card Notifikasi Otomatis -->
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title">Integrasi Notifikasi Otomatis (WhatsApp & Gmail)</h3>
+                <span style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-weight: 600;">Otomatisasi Aktif</span>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+                
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; color: #166534; line-height: 1.5;">
+                    💡 <strong>Cara Kerja Notifikasi Otomatis:</strong>
+                    <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                        <li><strong>WhatsApp:</strong> Menggunakan layanan gateway <a href="https://fonnte.com" target="_blank" style="color: #059669; font-weight: 600; text-decoration: underline;">Fonnte (fonnte.com)</a>. Cukup daftarkan nomor WA pengirim di Fonnte, lalu tempelkan <em>API Token</em> di bawah ini.</li>
+                        <li><strong>Gmail:</strong> Notifikasi email dikirimkan otomatis menggunakan akun SMTP Gmail yang dikonfigurasi pada berkas <code>.env</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">WhatsApp Gateway API Token (Fonnte Token)</label>
+                    <input type="text" name="wa_gateway_token" class="form-control" value="{{ $settings['wa_gateway_token'] ?? '' }}" placeholder="Contoh: aBcDeFgHiJkLmNoPqRsTuVwXyZ123456">
+                    <p class="form-help">Dapatkan token dari dashboard <a href="https://fonnte.com" target="_blank" style="color: #08a6d9;">fonnte.com</a> setelah menghubungkan perangkat WhatsApp.</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Nomor WhatsApp Admin (Penerima Notifikasi)</label>
+                        <input type="text" name="wa_admin_phone" class="form-control" value="{{ $settings['wa_admin_phone'] ?? '' }}" placeholder="Contoh: 081234567890">
+                        <p class="form-help">Nomor WA petugas yang akan menerima notif instan setiap ada peminjaman baru masuk.</p>
+                    </div>
+
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Email Admin (Penerima Notifikasi)</label>
+                        <input type="email" name="email_admin_notification" class="form-control" value="{{ $settings['email_admin_notification'] ?? 'admin@bakorwil3.go.id' }}" placeholder="admin@bakorwil3.go.id">
+                        <p class="form-help">Email petugas yang akan menerima rincian permohonan baru untuk diverifikasi.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </form>
 @endsection

@@ -36,9 +36,9 @@
                 <span>Data Ruangan</span>
             </a>
             
-            <a href="{{ route('admin.pengguna.index') }}" class="nav-item {{ request()->routeIs('admin.pengguna.*') ? 'active' : '' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
-                <span>Pengguna</span>
+            <a href="{{ route('admin.notifikasi.index') }}" class="nav-item {{ request()->routeIs('admin.notifikasi.*') ? 'active' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
+                <span>Notifikasi</span>
             </a>
             
             <a href="{{ route('admin.pengaturan.index') }}" class="nav-item {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}">
@@ -71,13 +71,13 @@
             </div>
             
             <div class="header-actions">
-                <button class="action-btn" title="Peminjaman Menunggu Konfirmasi" onclick="window.location.href='{{ route('admin.peminjaman.index', ['status' => 'pending']) }}'">
+                <button class="action-btn" title="Notifikasi" onclick="window.location.href='{{ route('admin.notifikasi.index') }}'">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
                     @php
-                        $pendingCount = \App\Models\Booking::where('status', 'pending')->count();
+                        $unreadNotifCount = \App\Models\AdminNotification::where('is_read', false)->count();
                     @endphp
-                    @if($pendingCount > 0)
-                        <span class="badge">{{ $pendingCount }}</span>
+                    @if($unreadNotifCount > 0)
+                        <span class="badge">{{ $unreadNotifCount }}</span>
                     @endif
                 </button>
                 

@@ -41,51 +41,64 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="nama_kegiatan">Nama Kegiatan</label>
-                    <input type="text" id="nama_kegiatan" name="nama_kegiatan"
-                           value="{{ old('nama_kegiatan') }}" placeholder="Contoh: Rapat Koordinasi Bulanan" required>
+                    <label for="nama_pemohon">Nama Pemohon <span style="color: red;">*</span></label>
+                    <input type="text" id="nama_pemohon" name="nama_pemohon"
+                           value="{{ old('nama_pemohon') }}" placeholder="Nama lengkap Anda" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="nama_pemohon">Nama Pemohon</label>
-                    <input type="text" id="nama_pemohon" name="nama_pemohon"
-                           value="{{ old('nama_pemohon', Auth::check() ? Auth::user()->name : '') }}" placeholder="Nama lengkap Anda" required>
+                    <label for="instansi">Instansi / Organisasi</label>
+                    <input type="text" id="instansi" name="instansi"
+                           value="{{ old('instansi') }}" placeholder="Nama instansi/lembaga (jika ada)">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="instansi">Instansi</label>
-                    <input type="text" id="instansi" name="instansi"
-                           value="{{ old('instansi') }}" placeholder="Nama instansi/lembaga">
+                    <label for="no_whatsapp">Nomor WhatsApp <span style="color: red;">*</span></label>
+                    <input type="text" id="no_whatsapp" name="no_whatsapp"
+                           value="{{ old('no_whatsapp') }}" placeholder="08xxxxxxxxxx" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="kontak">Kontak (No. HP / Email)</label>
-                    <input type="text" id="kontak" name="kontak"
-                           value="{{ old('kontak', Auth::check() ? Auth::user()->email : '') }}" placeholder="08xxxxxxxxxx atau email@contoh.com">
+                    <label for="email">Email <span style="color: red;">*</span></label>
+                    <input type="email" id="email" name="email"
+                           value="{{ old('email') }}" placeholder="email@contoh.com" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nama_kegiatan">Keperluan / Nama Kegiatan <span style="color: red;">*</span></label>
+                    <input type="text" id="nama_kegiatan" name="nama_kegiatan"
+                           value="{{ old('nama_kegiatan') }}" placeholder="Contoh: Rapat Koordinasi Bulanan" required>
                 </div>
             </div>
 
             <div class="form-row form-row-3">
                 <div class="form-group">
-                    <label for="tanggal">Tanggal</label>
+                    <label for="tanggal">Tanggal <span style="color: red;">*</span></label>
                     <input type="date" id="tanggal" name="tanggal" value="{{ old('tanggal') }}" min="{{ \Carbon\Carbon::now()->addDays(3)->format('Y-m-d') }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="jam_mulai">Jam Mulai</label>
+                    <label for="jam_mulai">Jam Mulai <span style="color: red;">*</span></label>
                     <input type="time" id="jam_mulai" name="jam_mulai" value="{{ old('jam_mulai') }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="jam_selesai">Jam Selesai</label>
+                    <label for="jam_selesai">Jam Selesai <span style="color: red;">*</span></label>
                     <input type="time" id="jam_selesai" name="jam_selesai" value="{{ old('jam_selesai') }}" required>
                 </div>
             </div>
 
             <div class="form-group" style="margin-top: 1rem;">
-                <label for="surat_pengajuan">Upload Surat Pengajuan (Wajib, format PDF, maksimal 15MB)</label>
+                <label for="keterangan">Keterangan Tambahan (Opsional)</label>
+                <textarea id="keterangan" name="keterangan" rows="3" placeholder="Informasi tambahan terkait kegiatan..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: vertical;">{{ old('keterangan') }}</textarea>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <label for="surat_pengajuan">Upload Surat Pengajuan (Wajib, format PDF, maksimal 15MB) <span style="color: red;">*</span></label>
                 <input type="file" id="surat_pengajuan" name="surat_pengajuan" accept="application/pdf" style="padding-top: 12px;" required>
             </div>
 
