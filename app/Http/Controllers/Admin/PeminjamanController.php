@@ -77,6 +77,7 @@ class PeminjamanController extends Controller
             'no_whatsapp'    => 'required|string|max:20',
             'email'          => 'required|email|max:255',
             'nama_kegiatan'  => 'required|string|max:255',
+            'jumlah_peserta' => 'nullable|integer|min:1',
             'tanggal'        => 'required|date',
             'jam_mulai'      => 'required',
             'jam_selesai'    => 'required|after:jam_mulai',

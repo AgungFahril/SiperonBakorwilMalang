@@ -62,9 +62,20 @@
 
         {{-- NAVBAR --}}
         <nav class="main-nav">
-            <div class="container nav-container">
+            <div class="mobile-nav-bar">
+                <a href="{{ route('home') }}" class="mobile-nav-brand">
+                    <img src="{{ asset('images/logo-bakorwil.png') }}" alt="Logo Bakorwil" style="height: 38px; width: auto;">
+                    <span>SIPERON</span>
+                </a>
+                <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Menu Navigasi" aria-expanded="false">
+                    <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
 
-                <a href="{{ url('/') }}" class="nav-link active">
+            <div class="container nav-container" id="mainNavLinks">
+
+                <a href="{{ url('/') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                     BERANDA
                 </a>
 
@@ -80,6 +91,10 @@
                     RUANGAN
                 </a>
 
+                <a href="{{ route('ketersediaan') }}" class="nav-link {{ request()->routeIs('ketersediaan') ? 'active' : '' }}">
+                    KETERSEDIAAN RUANGAN
+                </a>
+
                 <a href="{{ url('/') }}#jadwal" class="nav-link">
                     JADWAL
                 </a>
@@ -92,7 +107,7 @@
                     AJUKAN PEMINJAMAN
                 </a>
 
-                <div style="margin-left: auto; display: flex; gap: 12px; align-items: center;">
+                <div class="nav-actions-wrapper" style="margin-left: auto; display: flex; gap: 12px; align-items: center;">
                     <a href="{{ route('cek.booking.form') }}" class="nav-auth-btn nav-auth-btn-outline">
                         CEK BOOKING
                     </a>
@@ -212,9 +227,9 @@
 
                 <div>
                     @guest
-                        <a href="{{ route('login') }}" style="color: inherit; text-decoration: none; opacity: 0.6; font-size: 0.8rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">Portal Admin 🔒</a>
+                        <a href="{{ route('login') }}" style="color: inherit; text-decoration: none; opacity: 0.6; font-size: 0.8rem; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 4px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">Portal Admin <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></a>
                     @else
-                        <a href="{{ route('admin.dashboard') }}" style="color: inherit; text-decoration: none; opacity: 0.8; font-size: 0.8rem; font-weight: 600;">Panel Admin →</a>
+                        <a href="{{ route('admin.dashboard') }}" style="color: inherit; text-decoration: none; opacity: 0.8; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">Panel Admin <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
                     @endguest
                 </div>
 
@@ -224,6 +239,45 @@
 
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById('mobileNavToggle');
+            const navLinks = document.getElementById('mainNavLinks');
+            if (!toggleBtn || !navLinks) return;
+
+            const iconMenu = toggleBtn.querySelector('.icon-menu');
+            const iconClose = toggleBtn.querySelector('.icon-close');
+
+            function toggleMenu(show) {
+                const isOpen = show !== undefined ? show : !navLinks.classList.contains('is-open');
+                navLinks.classList.toggle('is-open', isOpen);
+                toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                if (iconMenu && iconClose) {
+                    iconMenu.style.display = isOpen ? 'none' : 'block';
+                    iconClose.style.display = isOpen ? 'block' : 'none';
+                }
+            }
+
+            toggleBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            // Close when clicking a nav link
+            navLinks.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    toggleMenu(false);
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    toggleMenu(false);
+                }
+            });
+        });
+    </script>
     @yield('scripts')
 </body>
 </html>

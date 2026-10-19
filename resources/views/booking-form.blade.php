@@ -73,12 +73,19 @@
                     <input type="text" id="nama_kegiatan" name="nama_kegiatan"
                            value="{{ old('nama_kegiatan') }}" placeholder="Contoh: Rapat Koordinasi Bulanan" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="jumlah_peserta">Jumlah Peserta <span style="color: red;">*</span></label>
+                    <input type="number" id="jumlah_peserta" name="jumlah_peserta"
+                           value="{{ old('jumlah_peserta') }}" placeholder="Contoh: 50" min="1" required>
+                    <small style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">Kapasitas ruangan ini: {{ $room->capacity }} kursi</small>
+                </div>
             </div>
 
             <div class="form-row form-row-3">
                 <div class="form-group">
                     <label for="tanggal">Tanggal <span style="color: red;">*</span></label>
-                    <input type="date" id="tanggal" name="tanggal" value="{{ old('tanggal') }}" min="{{ \Carbon\Carbon::now()->addDays(3)->format('Y-m-d') }}" required>
+                    <input type="date" id="tanggal" name="tanggal" value="{{ old('tanggal', request('tanggal')) }}" min="{{ \Carbon\Carbon::now()->addDays(3)->format('Y-m-d') }}" required>
                 </div>
 
                 <div class="form-group">

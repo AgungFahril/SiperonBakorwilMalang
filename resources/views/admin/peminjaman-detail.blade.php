@@ -9,7 +9,8 @@
             <p class="page-subtitle">{{ $booking->kode_booking }}</p>
         </div>
         <a href="{{ route('admin.peminjaman.index') }}" style="display: inline-flex; align-items: center; gap: 6px; color: #08a6d9; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
-            ← Kembali ke Daftar
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Kembali ke Daftar
         </a>
     </div>
 
@@ -41,8 +42,9 @@
                 <tr><td style="padding: 8px 0; color: #666;">Tanggal</td><td style="padding: 8px 0; font-weight: 600;">{{ $booking->tanggal->translatedFormat('l, d F Y') }}</td></tr>
                 <tr><td style="padding: 8px 0; color: #666;">Waktu</td><td style="padding: 8px 0; font-weight: 600;">{{ $booking->jam_mulai }} - {{ $booking->jam_selesai }}</td></tr>
                 <tr><td style="padding: 8px 0; color: #666;">Keperluan</td><td style="padding: 8px 0;">{{ $booking->nama_kegiatan }}</td></tr>
+                <tr><td style="padding: 8px 0; color: #666;">Jumlah Peserta</td><td style="padding: 8px 0; font-weight: 600;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td></tr>
                 @if($booking->keterangan)<tr><td style="padding: 8px 0; color: #666;">Keterangan</td><td style="padding: 8px 0;">{{ $booking->keterangan }}</td></tr>@endif
-                @if($booking->surat_pengajuan)<tr><td style="padding: 8px 0; color: #666;">Surat Pengajuan</td><td style="padding: 8px 0;"><a href="{{ asset('storage/' . $booking->surat_pengajuan) }}" target="_blank" style="color: #08a6d9;">📄 Lihat PDF</a></td></tr>@endif
+                @if($booking->surat_pengajuan)<tr><td style="padding: 8px 0; color: #666;">Surat Pengajuan</td><td style="padding: 8px 0;"><a href="{{ asset('storage/' . $booking->surat_pengajuan) }}" target="_blank" style="color: #08a6d9;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Lihat PDF</a></td></tr>@endif
                 <tr><td style="padding: 8px 0; color: #666;">Diajukan Pada</td><td style="padding: 8px 0;">{{ $booking->created_at->translatedFormat('d F Y, H:i') }}</td></tr>
                 @if($booking->admin)<tr><td style="padding: 8px 0; color: #666;">Diproses Oleh</td><td style="padding: 8px 0;">{{ $booking->admin->name }}</td></tr>@endif
                 @if($booking->approved_at)<tr><td style="padding: 8px 0; color: #666;">Waktu Persetujuan</td><td style="padding: 8px 0;">{{ $booking->approved_at->translatedFormat('d F Y, H:i') }}</td></tr>@endif
@@ -65,7 +67,7 @@
                             $waUrl = \App\Services\WhatsAppService::generateWaLink($booking->no_whatsapp, $waText);
                         @endphp
                         <a href="{{ $waUrl }}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: #dcfce7; color: #15803d; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.85rem;" title="Klik untuk membuka chat WhatsApp langsung">
-                            <span>💬 {{ $booking->no_whatsapp }}</span>
+                            <span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> {{ $booking->no_whatsapp }}</span>
                             <span style="font-size: 0.75rem; text-decoration: underline;">(Buka Chat WA)</span>
                         </a>
                     </td>
@@ -82,16 +84,16 @@
                         <form action="{{ route('admin.peminjaman.status', $booking) }}" method="POST" style="margin: 0;">
                             @csrf @method('PATCH')
                             <input type="hidden" name="status" value="disetujui">
-                            <button type="submit" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">✓ Setujui</button>
+                            <button type="submit" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Setujui</button>
                         </form>
                         <form action="{{ route('admin.peminjaman.status', $booking) }}" method="POST" style="margin: 0;">
                             @csrf @method('PATCH')
                             <input type="hidden" name="status" value="ditolak">
-                            <button type="submit" style="padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">✕ Tolak</button>
+                            <button type="submit" style="padding: 8px 16px; background: #dc2626; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Tolak</button>
                         </form>
                     @endif
                     @if(in_array($booking->status, ['pending', 'disetujui']))
-                        <button onclick="document.getElementById('rescheduleForm').style.display='block'" style="padding: 8px 16px; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">↻ Minta Penjadwalan Ulang</button>
+                        <button onclick="document.getElementById('rescheduleForm').style.display='block'" style="padding: 8px 16px; background: #6366f1; color: white; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Minta Penjadwalan Ulang</button>
                     @endif
                 </div>
 
@@ -130,7 +132,7 @@
                 <div>
                     <p style="font-size: 0.9rem; font-weight: 600; color: #171717; margin-bottom: 2px;">
                         {{ $history->status_sebelumnya ? ucfirst(str_replace('_', ' ', $history->status_sebelumnya)) : 'Baru' }}
-                        → {{ ucfirst(str_replace('_', ' ', $history->status_baru)) }}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin: 0 2px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> {{ ucfirst(str_replace('_', ' ', $history->status_baru)) }}
                     </p>
                     @if($history->alasan)
                         <p style="font-size: 0.85rem; color: #666; margin-bottom: 2px;">Alasan: {{ $history->alasan }}</p>

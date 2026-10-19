@@ -10,10 +10,10 @@
         
         @php
             $headerStyles = [
-                'disetujui' => ['bg' => 'linear-gradient(135deg, #059669, #047857)', 'title' => 'Peminjaman Disetujui! ✅'],
-                'ditolak'   => ['bg' => 'linear-gradient(135deg, #dc2626, #b91c1c)', 'title' => 'Permohonan Tidak Disetujui ❌'],
-                'dijadwalkan_ulang' => ['bg' => 'linear-gradient(135deg, #4f46e5, #4338ca)', 'title' => 'Peminjaman Perlu Dijadwalkan Ulang ⚠️'],
-                'selesai'   => ['bg' => 'linear-gradient(135deg, #4b5563, #374151)', 'title' => 'Peminjaman Telah Selesai 🏁'],
+                'disetujui' => ['bg' => 'linear-gradient(135deg, #059669, #047857)', 'title' => 'Peminjaman Disetujui!'],
+                'ditolak'   => ['bg' => 'linear-gradient(135deg, #dc2626, #b91c1c)', 'title' => 'Permohonan Tidak Disetujui'],
+                'dijadwalkan_ulang' => ['bg' => 'linear-gradient(135deg, #4f46e5, #4338ca)', 'title' => 'Peminjaman Perlu Dijadwalkan Ulang'],
+                'selesai'   => ['bg' => 'linear-gradient(135deg, #4b5563, #374151)', 'title' => 'Peminjaman Telah Selesai'],
             ];
             $h = $headerStyles[$statusBaru] ?? ['bg' => 'linear-gradient(135deg, #08a6d9, #0284c7)', 'title' => 'Update Status Peminjaman'];
         @endphp
@@ -82,6 +82,10 @@
                 <tr>
                     <td style="padding: 8px 0; color: #6b7280; border-bottom: 1px solid #f3f4f6;">Kegiatan</td>
                     <td style="padding: 8px 0; color: #111827; border-bottom: 1px solid #f3f4f6;">{{ $booking->nama_kegiatan }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px 0; color: #6b7280; border-bottom: 1px solid #f3f4f6;">Jumlah Peserta</td>
+                    <td style="padding: 8px 0; font-weight: 600; color: #111827; border-bottom: 1px solid #f3f4f6;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
                 </tr>
             </table>
 

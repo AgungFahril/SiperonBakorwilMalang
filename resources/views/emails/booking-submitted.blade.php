@@ -46,6 +46,10 @@
                     <td style="padding: 8px 0; color: #6b7280; border-bottom: 1px solid #f3f4f6;">Nama Kegiatan</td>
                     <td style="padding: 8px 0; color: #111827; border-bottom: 1px solid #f3f4f6;">{{ $booking->nama_kegiatan }}</td>
                 </tr>
+                <tr>
+                    <td style="padding: 8px 0; color: #6b7280; border-bottom: 1px solid #f3f4f6;">Jumlah Peserta</td>
+                    <td style="padding: 8px 0; font-weight: 600; color: #111827; border-bottom: 1px solid #f3f4f6;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
+                </tr>
                 @if($booking->instansi)
                 <tr>
                     <td style="padding: 8px 0; color: #6b7280; border-bottom: 1px solid #f3f4f6;">Instansi</td>

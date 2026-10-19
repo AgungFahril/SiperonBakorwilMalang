@@ -15,6 +15,7 @@ class Booking extends Model
         'room_id',
         'kode_booking',
         'nama_kegiatan',
+        'jumlah_peserta',
         'nama_pemohon',
         'instansi',
         'kontak',

@@ -10,7 +10,7 @@
         
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 28px 32px; text-align: center; color: #ffffff;">
-            <div style="font-size: 28px; margin-bottom: 6px;">🔔</div>
+            <div style="font-size: 28px; margin-bottom: 6px;">&#9888;</div>
             <h1 style="margin: 0; font-size: 20px; font-weight: 700;">Pengajuan Peminjaman Baru Masuk</h1>
             <p style="margin: 6px 0 0; font-size: 13px; color: #94a3b8;">SIPERON Admin Notification</p>
         </div>
@@ -60,6 +60,10 @@
                     <tr>
                         <td style="padding: 6px 0; color: #64748b;">Kegiatan</td>
                         <td style="padding: 6px 0;">{{ $booking->nama_kegiatan }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px 0; color: #64748b;">Jumlah Peserta</td>
+                        <td style="padding: 6px 0; font-weight: 600;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
                     </tr>
                 </table>
             </div>

@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Ketersediaan Ruangan - PUBLIK
+Route::get('/ketersediaan', [HomeController::class, 'ketersediaan'])->name('ketersediaan');
+
 // Booking - PUBLIK (tanpa login)
 Route::get('/ruangan/{room}/ajukan', [HomeController::class, 'bookingForm'])->name('booking.form');
 Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->name('booking.store');
