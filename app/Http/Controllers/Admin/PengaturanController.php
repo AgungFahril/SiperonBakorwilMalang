@@ -11,7 +11,8 @@ class PengaturanController extends Controller
     public function index()
     {
         $settings = Setting::pluck('value', 'key')->all();
-        return view('admin.pengaturan', compact('settings'));
+        $waStatus = \App\Services\WhatsAppService::getDeviceStatus();
+        return view('admin.pengaturan', compact('settings', 'waStatus'));
     }
 
     public function update(Request $request)

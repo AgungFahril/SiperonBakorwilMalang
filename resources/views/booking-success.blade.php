@@ -44,6 +44,10 @@
                     <td style="padding: 6px 0; color: #666;">Keperluan</td>
                     <td style="padding: 6px 0; font-weight: 600;">{{ $booking->nama_kegiatan }}</td>
                 </tr>
+                <tr>
+                    <td style="padding: 6px 0; color: #666;">Jumlah Peserta</td>
+                    <td style="padding: 6px 0; font-weight: 600;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
+                </tr>
             </table>
         </div>
 

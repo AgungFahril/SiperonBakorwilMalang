@@ -20,7 +20,7 @@ class NewBookingAdminMail extends Mailable
 
     public function build()
     {
-        return $this->subject('🔔 Permohonan Peminjaman Ruangan Baru - ' . $this->booking->kode_booking)
+        return $this->subject('[SIPERON] Permohonan Peminjaman Ruangan Baru - ' . $this->booking->kode_booking)
                     ->view('emails.new-booking-admin');
     }
 }

@@ -171,6 +171,44 @@ img {
     background: rgba(255, 255, 255, 0.95);
 }
 
+.mobile-nav-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #ffffff;
+}
+
+.mobile-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #08a6d9;
+    text-decoration: none;
+}
+
+.mobile-nav-toggle {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 10px;
+    color: #1e293b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-toggle:hover,
+.mobile-nav-toggle:focus {
+    background: #f0f9ff;
+    border-color: #08a6d9;
+    color: #08a6d9;
+}
+
 .nav-container {
     min-height: 62px;
     display: flex;
@@ -1070,4 +1108,1086 @@ section, footer {
         padding: 30px 20px;
     }
 
+}
+
+/* =========================================
+   HALAMAN KETERSEDIAAN RUANGAN (PUBLIK)
+========================================= */
+.ketersediaan-hero {
+    background: linear-gradient(135deg, #0b2b40 0%, #154360 100%);
+    padding: 44px 0;
+    color: #ffffff;
+    text-align: left;
+}
+
+.ketersediaan-hero-badge {
+    display: inline-block;
+    background: rgba(8, 166, 217, 0.2);
+    border: 1px solid rgba(8, 166, 217, 0.4);
+    color: #38bdf8;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.ketersediaan-hero-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.ketersediaan-hero-subtitle {
+    font-size: 15px;
+    color: #cbd5e1;
+    max-width: 650px;
+    line-height: 1.5;
+}
+
+.ketersediaan-section {
+    background: #f8fafc;
+    padding: 40px 0 80px;
+}
+
+.ketersediaan-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* Sidebar Kolom Kiri */
+.ketersediaan-sidebar .sidebar-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 90px;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.sidebar-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.date-picker-box {
+    margin-bottom: 20px;
+}
+
+.date-picker-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.date-input-field {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    background: #ffffff;
+    outline: none;
+    transition: 0.2s;
+    font-family: inherit;
+}
+
+.date-input-field:focus {
+    border-color: #08a6d9;
+    box-shadow: 0 0 0 3px rgba(8, 166, 217, 0.15);
+}
+
+.quick-date-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.btn-quick-date {
+    padding: 7px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    transition: 0.15s;
+    text-align: center;
+    font-family: inherit;
+}
+
+.btn-quick-date:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-quick-date.active {
+    background: #08a6d9;
+    color: #ffffff;
+    border-color: #08a6d9;
+}
+
+/* Kalender Mini */
+.mini-calendar {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 20px;
+}
+
+.mini-cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.mini-cal-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.mini-cal-nav {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #334155;
+    transition: 0.15s;
+}
+
+.mini-cal-nav:hover {
+    background: #08a6d9;
+    color: #ffffff;
+    border-color: #08a6d9;
+}
+
+.mini-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    text-align: center;
+}
+
+.mini-cal-day-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding-bottom: 6px;
+}
+
+.mini-cal-day {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    transition: 0.15s;
+    font-family: inherit;
+}
+
+.mini-cal-day:hover {
+    background: #e2e8f0;
+}
+
+.mini-cal-day.selected {
+    background: #08a6d9 !important;
+    color: #ffffff !important;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(8, 166, 217, 0.4);
+}
+
+.mini-cal-day.today:not(.selected) {
+    border-color: #08a6d9;
+}
+
+.day-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-top: 1px;
+}
+
+.dot-approved {
+    background: #ef4444;
+}
+
+.dot-pending {
+    background: #f59e0b;
+}
+
+.mini-cal-day.selected .day-dot {
+    background: #ffffff;
+}
+
+/* Sidebar Summary */
+.sidebar-summary {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+
+.summary-badge-date {
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #166534;
+}
+
+.summary-badge-date strong {
+    display: block;
+    font-size: 14px;
+    color: #14532d;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.summary-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.stat-pill {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 8px 4px;
+    text-align: center;
+    border: 1px solid #dcfce7;
+}
+
+.stat-num {
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.stat-lbl {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.stat-total .stat-num {
+    color: #0f172a;
+}
+
+.stat-available .stat-num {
+    color: #16a34a;
+}
+
+.stat-booked .stat-num {
+    color: #dc2626;
+}
+
+/* Sidebar Legend */
+.sidebar-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+    color: #64748b;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 14px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.legend-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.bullet-available {
+    background: #16a34a;
+}
+
+.bullet-booked {
+    background: #dc2626;
+}
+
+/* Kolom Kanan */
+.ketersediaan-main .main-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: opacity 0.2s;
+}
+
+.main-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f1f5f9;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.header-pre-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #08a6d9;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.main-date-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.main-date-desc {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+.room-filter-tabs {
+    display: flex;
+    gap: 6px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.filter-tab-btn {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    transition: 0.15s;
+    font-family: inherit;
+}
+
+.filter-tab-btn.active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.rooms-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Card Ruangan */
+.room-status-card {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.room-status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.card-available {
+    border-left: 5px solid #10b981;
+}
+
+.card-booked {
+    border-left: 5px solid #ef4444;
+}
+
+.room-card-thumbnail {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-color: #f1f5f9;
+    min-height: 180px;
+}
+
+.thumbnail-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 700;
+    gap: 8px;
+}
+
+.thumbnail-status-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.badge-green {
+    background: #10b981;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+}
+
+.badge-red {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+.room-card-info {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.room-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.room-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.room-meta-tags {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.meta-tag {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-pill-available {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.status-pill-booked {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.status-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 1.8s infinite;
+}
+
+.status-solid-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.availability-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+}
+
+.notice-available {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.notice-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.notice-text strong {
+    display: block;
+    color: #14532d;
+    font-weight: 700;
+}
+
+.notice-text p {
+    margin: 3px 0 0 0;
+    color: #15803d;
+    line-height: 1.4;
+}
+
+/* Jadwal Terbooking */
+.booked-schedule-box {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.booked-schedule-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #9a3412;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.schedule-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.schedule-item {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid #ffedd5;
+    flex-wrap: wrap;
+}
+
+.schedule-time-badge {
+    font-size: 12px;
+    font-weight: 800;
+    color: #c2410c;
+    background: #fff7ed;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #ffedd5;
+}
+
+.schedule-detail {
+    flex: 1;
+    min-width: 200px;
+}
+
+.schedule-event-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.schedule-instansi {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 1px;
+}
+
+.schedule-status-badge .badge-approved {
+    background: #dcfce7;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.schedule-status-badge .badge-pending {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.schedule-slot-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #9a3412;
+    line-height: 1.4;
+}
+
+/* Tombol Aksi */
+.room-action-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.btn-action-book {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #08a6d9;
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.25);
+}
+
+.btn-action-book:hover {
+    background: #068ab5;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(8, 166, 217, 0.35);
+    color: #ffffff;
+}
+
+.btn-action-alternative {
+    background: #ffffff;
+    color: #08a6d9;
+    border: 1px solid #08a6d9;
+    box-shadow: none;
+}
+
+.btn-action-alternative:hover {
+    background: #f0f9ff;
+    color: #068ab5;
+}
+
+.empty-rooms-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.empty-rooms-state h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #475569;
+    margin: 12px 0 6px 0;
+}
+
+/* =========================================
+   RESPONSIVE & MOBILE SYNCHRONIZATION
+========================================= */
+
+@media (max-width: 992px) {
+    /* Navbar Mobile Drawer */
+    .mobile-nav-bar {
+        display: flex;
+    }
+
+    .nav-container {
+        display: none;
+        min-height: auto;
+    }
+
+    .nav-container.is-open {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 16px 20px 24px;
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+        animation: mobileNavFadeIn 0.25s ease-out;
+    }
+
+    @keyframes mobileNavFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .nav-link {
+        padding: 12px 14px;
+        border-radius: 8px;
+        width: 100%;
+        display: block;
+        border-bottom: 1px solid #f8fafc;
+        font-size: 14px;
+    }
+
+    .nav-link::after {
+        display: none;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+        background: #f0f9ff;
+        color: #08a6d9;
+    }
+
+    .nav-actions-wrapper {
+        margin-left: 0 !important;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 14px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .nav-auth-btn {
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+
+    /* Process & Rooms Layout */
+    .process-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
+    }
+
+    /* Ketersediaan Layout */
+    .ketersediaan-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .ketersediaan-sidebar .sidebar-card {
+        position: static;
+    }
+
+    .room-status-card {
+        grid-template-columns: 1fr;
+    }
+
+    .room-card-thumbnail {
+        height: 190px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Header Top */
+    .top-header-content {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .header-info {
+        display: none;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    .brand-area {
+        padding: 8px 0;
+    }
+
+    .logo {
+        height: 52px !important;
+    }
+
+    /* Hero Section */
+    .hero {
+        padding: 42px 0 48px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.1rem;
+    }
+
+    .hero-content h2 {
+        font-size: 1.25rem;
+    }
+
+    .hero-content p {
+        font-size: 0.95rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Process Grid */
+    .process-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .process-card {
+        padding: 22px 18px;
+    }
+
+    /* Rooms Grid */
+    .rooms-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .room-image {
+        height: 190px;
+    }
+
+    /* Booking CTA Section */
+    .booking-box {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 28px 20px;
+    }
+
+    .booking-box .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Footer */
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 24px;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    .footer-bottom .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    /* Forms */
+    .booking-form-section {
+        padding: 30px 0 50px;
+    }
+
+    .booking-form-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .booking-form {
+        padding: 22px 16px;
+        border-radius: 12px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    /* Cek Booking Form */
+    .cek-booking-card {
+        padding: 24px 16px;
+        border-radius: 12px;
+    }
+
+    .booking-result-card {
+        padding: 20px 16px;
+    }
+
+    .booking-result-timeline {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    /* Ketersediaan Card & Schedule */
+    .room-header-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .room-action-row {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-action-book,
+    .btn-action-alternative {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .schedule-slot-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .calendar-card {
+        padding: 16px 12px;
+    }
+
+    .calendar-table {
+        font-size: 12px;
+    }
+
+    .calendar-table th,
+    .calendar-table td {
+        padding: 6px 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 94%;
+    }
+
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-content h2 {
+        font-size: 1.1rem;
+    }
+
+    .section-heading h2 {
+        font-size: 1.4rem;
+    }
+
+    /* iOS auto-zoom prevention: ensure inputs have font-size >= 16px */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="time"],
+    input[type="file"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
 }

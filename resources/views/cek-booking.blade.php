@@ -11,12 +11,12 @@
             <p style="color: #666;">Masukkan kode booking Anda untuk melihat status peminjaman.</p>
         </div>
 
-        <form method="POST" action="{{ route('cek.booking') }}" style="display: flex; gap: 12px; margin-bottom: 2rem;">
+        <form method="POST" action="{{ route('cek.booking') }}" class="cek-booking-form-inline" style="display: flex; gap: 12px; margin-bottom: 2rem; flex-wrap: wrap;">
             @csrf
             <input type="text" name="kode_booking" value="{{ old('kode_booking') }}" placeholder="Contoh: BR-20261008-0001"
-                   style="flex: 1; padding: 14px 18px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"
+                   style="flex: 1 1 240px; padding: 14px 18px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;"
                    required>
-            <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Cek Status</button>
+            <button type="submit" class="btn btn-primary" style="white-space: nowrap; flex: 0 0 auto;">Cek Status</button>
         </form>
 
         @if ($errors->any())
@@ -79,6 +79,10 @@
                             <td style="padding: 8px 0;">{{ $booking->nama_kegiatan }}</td>
                         </tr>
                         <tr>
+                            <td style="padding: 8px 0; color: #666;">Jumlah Peserta</td>
+                            <td style="padding: 8px 0; font-weight: 600;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
+                        </tr>
+                        <tr>
                             <td style="padding: 8px 0; color: #666;">Diajukan Pada</td>
                             <td style="padding: 8px 0;">{{ $booking->created_at->translatedFormat('d F Y, H:i') }}</td>
                         </tr>
@@ -101,7 +105,7 @@
                             <div>
                                 <p style="font-size: 0.85rem; font-weight: 600; color: #171717; margin-bottom: 2px;">
                                     {{ $history->status_sebelumnya ? ucfirst(str_replace('_', ' ', $history->status_sebelumnya)) : 'Baru' }}
-                                    → {{ ucfirst(str_replace('_', ' ', $history->status_baru)) }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin: 0 2px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> {{ ucfirst(str_replace('_', ' ', $history->status_baru)) }}
                                 </p>
                                 @if($history->alasan)
                                     <p style="font-size: 0.82rem; color: #666; margin-bottom: 2px;">Alasan: {{ $history->alasan }}</p>
@@ -132,7 +136,7 @@
         @endif
 
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="{{ route('home') }}" style="color: #08a6d9; font-weight: 600; text-decoration: none;">← Kembali ke Beranda</a>
+            <a href="{{ route('home') }}" style="color: #08a6d9; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Kembali ke Beranda</a>
         </div>
 
     </div>

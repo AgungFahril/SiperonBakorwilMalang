@@ -25,10 +25,10 @@ class BookingStatusUpdatedMail extends Mailable
     public function build()
     {
         $statusLabels = [
-            'disetujui'         => 'DISETUJUI ✅',
-            'ditolak'           => 'DITOLAK ❌',
-            'dijadwalkan_ulang' => 'PERLU PENJADWALAN ULANG ⚠️',
-            'selesai'           => 'SELESAI 🏁',
+            'disetujui'         => 'DISETUJUI',
+            'ditolak'           => 'DITOLAK',
+            'dijadwalkan_ulang' => 'PERLU PENJADWALAN ULANG',
+            'selesai'           => 'SELESAI',
         ];
 
         $label = $statusLabels[$this->statusBaru] ?? strtoupper($this->statusBaru);

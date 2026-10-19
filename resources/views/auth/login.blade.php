@@ -45,7 +45,7 @@
 </form>
 
 <div class="auth-footer" style="margin-top: 1.5rem; text-align: center;">
-    <a href="{{ route('home') }}" class="auth-link" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem;">← Kembali ke Beranda Publik</a>
+    <a href="{{ route('home') }}" class="auth-link" style="color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 4px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Kembali ke Beranda Publik</a>
 </div>
 
 <script>

@@ -78,6 +78,97 @@ class HomeController extends Controller
         ]);
     }
 
+    /**
+     * Halaman Publik: Ketersediaan Ruangan per Tanggal (Kiri: Tanggal, Kanan: Status Ruangan)
+     */
+    public function ketersediaan(Request $request)
+    {
+        // 1. Tentukan tanggal yang dipilih (default hari ini, atau dari request YYYY-MM-DD)
+        $dateParam = $request->get('tanggal');
+        try {
+            $selectedDate = $dateParam ? Carbon::parse($dateParam) : Carbon::today();
+        } catch (\Throwable $e) {
+            $selectedDate = Carbon::today();
+        }
+
+        // 2. Bulan & Tahun untuk kalender di sebelah kiri
+        $calMonth = (int) $request->get('cal_month', $selectedDate->month);
+        $calYear  = (int) $request->get('cal_year', $selectedDate->year);
+        $calCurrent = Carbon::create($calYear, $calMonth, 1);
+        $daysInMonth = $calCurrent->daysInMonth;
+        $startDayOffset = $calCurrent->dayOfWeekIso - 1;
+
+        // Ambil semua tanggal yang memiliki booking di bulan kalender mini
+        $monthBookings = Booking::whereIn('status', ['disetujui', 'pending'])
+            ->whereYear('tanggal', $calYear)
+            ->whereMonth('tanggal', $calMonth)
+            ->get(['tanggal', 'status']);
+
+        $bookedDayCounts = [];
+        foreach ($monthBookings as $mb) {
+            $day = $mb->tanggal->day;
+            if (!isset($bookedDayCounts[$day])) {
+                $bookedDayCounts[$day] = ['approved' => 0, 'pending' => 0];
+            }
+            if ($mb->status === 'disetujui') {
+                $bookedDayCounts[$day]['approved']++;
+            } else {
+                $bookedDayCounts[$day]['pending']++;
+            }
+        }
+
+        // 3. Ambil semua ruangan aktif
+        $rooms = Room::where('is_active', true)->get();
+
+        // 4. Ambil booking di tanggal yang dipilih ($selectedDate)
+        $dayBookings = Booking::with('room')
+            ->whereDate('tanggal', $selectedDate->toDateString())
+            ->whereIn('status', ['disetujui', 'pending'])
+            ->orderBy('jam_mulai')
+            ->get();
+
+        // 5. Susun status ketersediaan untuk masing-masing ruangan
+        $roomStatuses = [];
+        $totalTersedia = 0;
+        $totalTerbooking = 0;
+
+        foreach ($rooms as $room) {
+            $rBookings = $dayBookings->where('room_id', $room->id)->values();
+
+            if ($rBookings->isEmpty()) {
+                $status = 'tersedia';
+                $totalTersedia++;
+            } else {
+                $status = 'terbooking';
+                $totalTerbooking++;
+            }
+
+            $roomStatuses[] = [
+                'room'     => $room,
+                'status'   => $status, // 'tersedia' | 'terbooking'
+                'bookings' => $rBookings,
+            ];
+        }
+
+        $viewData = [
+            'selectedDate'    => $selectedDate,
+            'calCurrent'      => $calCurrent,
+            'daysInMonth'     => $daysInMonth,
+            'startDayOffset'  => $startDayOffset,
+            'bookedDayCounts' => $bookedDayCounts,
+            'roomStatuses'    => $roomStatuses,
+            'totalRooms'      => $rooms->count(),
+            'totalTersedia'   => $totalTersedia,
+            'totalTerbooking' => $totalTerbooking,
+        ];
+
+        if ($request->ajax()) {
+            return view('partials.ketersediaan-content', $viewData);
+        }
+
+        return view('ketersediaan', $viewData);
+    }
+
     // Menampilkan form pengajuan peminjaman untuk 1 ruangan (PUBLIK)
     public function bookingForm(Room $room)
     {
@@ -89,6 +180,7 @@ class HomeController extends Controller
     {
         $data = $request->validate([
             'nama_kegiatan'   => 'required|string|max:255',
+            'jumlah_peserta'  => 'required|integer|min:1',
             'nama_pemohon'    => 'required|string|max:255',
             'instansi'        => 'nullable|string|max:255',
             'no_whatsapp'     => 'required|string|max:20',

@@ -98,12 +98,13 @@ class NotificationService
             $pesanWaPemohon = "*SIPERON BAKORWIL III MALANG*\n\n"
                 . "Halo *{$booking->nama_pemohon}*,\n"
                 . "Pengajuan peminjaman ruangan Anda telah kami terima.\n\n"
-                . "📋 *Rincian Pengajuan:*\n"
+                . "*Rincian Pengajuan:*\n"
                 . "• Kode Booking: *{$booking->kode_booking}*\n"
                 . "• Ruangan: {$booking->room->name}\n"
                 . "• Tanggal: {$booking->tanggal->translatedFormat('d F Y')}\n"
                 . "• Waktu: {$booking->jam_mulai} - {$booking->jam_selesai} WIB\n"
                 . "• Kegiatan: {$booking->nama_kegiatan}\n"
+                . "• Jumlah Peserta: " . ($booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-') . "\n"
                 . "• Status: *MENUNGGU PERSETUJUAN*\n\n"
                 . "Simpan kode booking Anda dan pantau status peminjaman melalui tautan berikut:\n"
                 . route('cek.booking.form') . "\n\n"
@@ -115,13 +116,14 @@ class NotificationService
         // 5. Kirim WhatsApp ke Admin (jika nomor admin diisi)
         $adminWa = $this->getAdminWhatsApp();
         if (!empty($adminWa)) {
-            $pesanWaAdmin = "🔔 *PERMOHONAN PEMINJAMAN BARU (SIPERON)*\n\n"
+            $pesanWaAdmin = "*[PEMBERITAHUAN] PERMOHONAN PEMINJAMAN BARU (SIPERON)*\n\n"
                 . "• Kode: *{$booking->kode_booking}*\n"
                 . "• Pemohon: {$booking->nama_pemohon} (" . ($booking->instansi ?: '-') . ")\n"
                 . "• Ruangan: {$booking->room->name}\n"
                 . "• Tanggal: {$booking->tanggal->translatedFormat('d F Y')}\n"
                 . "• Waktu: {$booking->jam_mulai} - {$booking->jam_selesai} WIB\n"
-                . "• Keperluan: {$booking->nama_kegiatan}\n\n"
+                . "• Keperluan: {$booking->nama_kegiatan}\n"
+                . "• Jumlah Peserta: " . ($booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-') . "\n\n"
                 . "Silakan periksa dan verifikasi melalui panel admin:\n"
                 . route('admin.peminjaman.show', $booking);
 
@@ -150,10 +152,10 @@ class NotificationService
 
         // 2. Siapkan Pesan WhatsApp sesuai status
         $statusHeader = [
-            'disetujui'         => 'DISETUJUI ✅',
-            'ditolak'           => 'DITOLAK ❌',
-            'dijadwalkan_ulang' => 'PERLU PENJADWALAN ULANG ⚠️',
-            'selesai'           => 'SELESAI 🏁',
+            'disetujui'         => 'DISETUJUI',
+            'ditolak'           => 'DITOLAK',
+            'dijadwalkan_ulang' => 'PERLU PENJADWALAN ULANG',
+            'selesai'           => 'SELESAI',
         ];
 
         $headerText = $statusHeader[$statusBaru] ?? strtoupper($statusBaru);
@@ -161,12 +163,13 @@ class NotificationService
         $pesanWa = "*SIPERON BAKORWIL III MALANG*\n\n"
             . "Halo *{$booking->nama_pemohon}*,\n"
             . "Status peminjaman ruangan Anda (*{$booking->kode_booking}*) telah diperbarui menjadi:\n\n"
-            . "👉 *{$headerText}*\n\n"
-            . "📋 *Rincian Acara:*\n"
+            . "*STATUS: {$headerText}*\n\n"
+            . "*Rincian Acara:*\n"
             . "• Ruangan: {$booking->room->name}\n"
             . "• Tanggal: {$booking->tanggal->translatedFormat('d F Y')}\n"
             . "• Waktu: {$booking->jam_mulai} - {$booking->jam_selesai} WIB\n"
-            . "• Kegiatan: {$booking->nama_kegiatan}\n";
+            . "• Kegiatan: {$booking->nama_kegiatan}\n"
+            . "• Jumlah Peserta: " . ($booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-') . "\n";
 
         if ($statusBaru === 'disetujui') {
             $pesanWa .= "\nSelamat, pengajuan Anda telah disetujui! Silakan hadir tepat waktu sesuai jadwal yang telah ditentukan.";
@@ -183,7 +186,10 @@ class NotificationService
 
         // Kirim WhatsApp jika nomor ada
         if (!empty($booking->no_whatsapp)) {
-            WhatsAppService::send($booking->no_whatsapp, $pesanWa);
+            $waRes = WhatsAppService::send($booking->no_whatsapp, $pesanWa);
+            if (!($waRes['success'] ?? false)) {
+                Log::warning("Pengiriman WA update status ke {$booking->no_whatsapp} tidak berhasil: " . json_encode($waRes));
+            }
         }
 
         // 3. Simpan log notifikasi di internal database

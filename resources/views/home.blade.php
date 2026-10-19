@@ -24,7 +24,8 @@
             secara digital.
         </p>
         <div class="hero-actions">
-            <a href="#ruangan" class="btn btn-primary">Lihat Ruangan</a>
+            <a href="{{ route('ketersediaan') }}" class="btn btn-primary">Cek Ketersediaan Ruangan</a>
+            <a href="#ruangan" class="btn btn-outline">Lihat Ruangan</a>
             <a href="#alur" class="btn btn-outline">Pelajari Alur</a>
         </div>
     </div>
@@ -117,7 +118,7 @@
                         </p>
 
                         <a href="{{ route('booking.form', $room) }}" class="room-link">
-                            Ajukan Peminjaman →
+                            Ajukan Peminjaman &rarr;
                         </a>
                     </div>
 
@@ -139,6 +140,12 @@
             <span>JADWAL</span>
             <h2>Jadwal Peminjaman Ruangan</h2>
             <p>Periksa jadwal penggunaan ruangan sebelum mengajukan peminjaman.</p>
+            <div style="margin-top: 14px;">
+                <a href="{{ route('ketersediaan') }}" class="btn btn-outline" style="font-size: 13px; padding: 8px 18px; border-color: #08a6d9; color: #08a6d9; display: inline-flex; align-items: center; gap: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                    Buka Kalender & Status Ketersediaan per Tanggal &rarr;
+                </a>
+            </div>
         </div>
 
         <div class="calendar-wrapper" id="calendar-container">

@@ -82,7 +82,15 @@
                         <td>{{ $booking->room->name ?? '-' }}</td>
                         <td>{{ $booking->tanggal->translatedFormat('d M Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
-                        <td><span class="purpose-text">{{ $booking->nama_kegiatan }}</span></td>
+                        <td>
+                            <span class="purpose-text">{{ $booking->nama_kegiatan }}</span>
+                            @if($booking->jumlah_peserta)
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; display: flex; align-items: center; gap: 4px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+                                    {{ $booking->jumlah_peserta }} Peserta
+                                </div>
+                            @endif
+                        </td>
                         <td>
                             @if($booking->surat_pengajuan)
                                 <a href="{{ asset('storage/' . $booking->surat_pengajuan) }}" target="_blank" title="Lihat PDF" style="color: #dc2626; display: inline-flex; align-items: center;">
@@ -247,9 +255,15 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Keperluan / Nama Kegiatan</label>
-                        <textarea name="nama_kegiatan" class="form-control" rows="3" placeholder="Deskripsikan keperluan acara..." required></textarea>
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 2;">
+                            <label class="form-label">Keperluan / Nama Kegiatan</label>
+                            <input type="text" name="nama_kegiatan" class="form-control" placeholder="Deskripsikan keperluan acara..." required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label">Jumlah Peserta</label>
+                            <input type="number" name="jumlah_peserta" class="form-control" min="1" placeholder="Cth: 50">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -304,6 +318,10 @@
                         <div>
                             <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Keperluan Acara</span>
                             <div style="font-size: 0.9rem; color: var(--text-main); margin-top: 0.25rem; line-height: 1.6;">{{ $booking->nama_kegiatan }}</div>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Jumlah Peserta</span>
+                            <div style="font-size: 0.9rem; color: var(--text-main); margin-top: 0.25rem; font-weight: 600;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</div>
                         </div>
                         @if($booking->catatan)
                         <div>

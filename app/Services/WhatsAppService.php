@@ -46,6 +46,58 @@ class WhatsAppService
     }
 
     /**
+     * Dapatkan status koneksi perangkat dari Fonnte API.
+     */
+    public static function getDeviceStatus(): array
+    {
+        $token = self::getToken();
+        if (empty($token)) {
+            return [
+                'configured' => false,
+                'connected'  => false,
+                'status'     => 'no_token',
+                'message'    => 'Token belum diisi'
+            ];
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+            ])->timeout(6)->post('https://api.fonnte.com/device');
+
+            $result = $response->json();
+
+            if ($response->successful() && isset($result['status']) && $result['status'] === true) {
+                $devStatus = strtolower($result['device_status'] ?? 'disconnect');
+                return [
+                    'configured'    => true,
+                    'connected'     => ($devStatus === 'connect'),
+                    'status'        => $devStatus,
+                    'device'        => $result['device'] ?? null,
+                    'name'          => $result['name'] ?? null,
+                    'quota'         => $result['quota'] ?? 0,
+                    'expired'       => $result['expired'] ?? null,
+                    'message'       => ($devStatus === 'connect') ? 'Terhubung (Online)' : 'Terputus (Belum Scan QR / Disconnected)',
+                ];
+            }
+
+            return [
+                'configured' => true,
+                'connected'  => false,
+                'status'     => 'invalid',
+                'message'    => $result['reason'] ?? 'Token tidak valid atau gagal terhubung ke Fonnte'
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'configured' => true,
+                'connected'  => false,
+                'status'     => 'error',
+                'message'    => 'Koneksi ke server Fonnte timeout / error: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Kirim pesan WhatsApp otomatis via Fonnte Gateway.
      */
     public static function send(string $targetPhone, string $message): array
@@ -79,7 +131,7 @@ class WhatsAppService
             $result = $response->json();
 
             if ($response->successful() && isset($result['status']) && $result['status'] === true) {
-                Log::info("WhatsApp berhasil terkirim ke {$phone}");
+                Log::info("WhatsApp berhasil dikirim ke {$phone}: " . ($result['detail'] ?? 'OK'));
                 return ['success' => true, 'response' => $result];
             } else {
                 Log::warning("Gagal mengirim WhatsApp ke {$phone}: " . ($result['reason'] ?? $response->body()));
