@@ -6,7 +6,7 @@
     <title>Permohonan Peminjaman Ruangan Baru</title>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 24px; color: #333333;">
-    <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;">
+    <div style="max-width: 650px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e5e7eb;">
         
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 28px 32px; text-align: center; color: #ffffff;">
@@ -22,55 +22,91 @@
                 Ada pengajuan peminjaman ruangan baru yang membutuhkan verifikasi Anda:
             </p>
 
-            <!-- Card Info -->
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin: 20px 0;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <!-- Identitas Pemohon -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px;">Identitas Pemohon</h4>
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b; width: 38%;">Kode Booking</td>
-                        <td style="padding: 6px 0; font-weight: 700; color: #08a6d9;">{{ $booking->kode_booking }}</td>
+                        <td style="padding: 4px 0; color: #64748b; width: 35%;">Nama Pemohon</td>
+                        <td style="padding: 4px 0; font-weight: 600; color: #1e293b;">{{ $booking->nama_pemohon }}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Nama Pemohon</td>
-                        <td style="padding: 6px 0; font-weight: 600;">{{ $booking->nama_pemohon }}</td>
+                        <td style="padding: 4px 0; color: #64748b;">Instansi</td>
+                        <td style="padding: 4px 0; color: #1e293b;">{{ $booking->instansi ?: '-' }}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Instansi</td>
-                        <td style="padding: 6px 0;">{{ $booking->instansi ?: '-' }}</td>
+                        <td style="padding: 4px 0; color: #64748b;">WhatsApp</td>
+                        <td style="padding: 4px 0; font-weight: 600; color: #059669;">{{ $booking->no_whatsapp }}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 6px 0; color: #64748b;">WhatsApp</td>
-                        <td style="padding: 6px 0; font-weight: 600; color: #059669;">{{ $booking->no_whatsapp }}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Email</td>
-                        <td style="padding: 6px 0;">{{ $booking->email }}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Ruangan</td>
-                        <td style="padding: 6px 0; font-weight: 600;">{{ $booking->room->name ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Tanggal Acara</td>
-                        <td style="padding: 6px 0; font-weight: 600;">{{ $booking->tanggal->translatedFormat('l, d F Y') }}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Waktu</td>
-                        <td style="padding: 6px 0;">{{ $booking->jam_mulai }} - {{ $booking->jam_selesai }} WIB</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Kegiatan</td>
-                        <td style="padding: 6px 0;">{{ $booking->nama_kegiatan }}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; color: #64748b;">Jumlah Peserta</td>
-                        <td style="padding: 6px 0; font-weight: 600;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
+                        <td style="padding: 4px 0; color: #64748b;">Email</td>
+                        <td style="padding: 4px 0; color: #1e293b;">{{ $booking->email }}</td>
                     </tr>
                 </table>
             </div>
 
+            <!-- Daftar Ruangan -->
+            <h4 style="margin: 20px 0 10px 0; font-size: 14px; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px;">
+                Ruangan yang Diajukan ({{ isset($bookings) ? $bookings->count() : 1 }} Ruangan)
+            </h4>
+
+            @if(isset($bookings) && $bookings->count() > 1)
+                @foreach($bookings as $idx => $item)
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #08a6d9; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <strong style="color: #0f172a; font-size: 14px;">{{ $idx + 1 }}. {{ $item->room->name ?? 'Ruangan' }}</strong>
+                            <span style="font-weight: 700; color: #08a6d9; font-size: 12px;">{{ $item->kode_booking }}</span>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                            <tr>
+                                <td style="padding: 3px 0; color: #64748b; width: 32%;">Tanggal</td>
+                                <td style="padding: 3px 0; font-weight: 600;">{{ $item->tanggal->translatedFormat('l, d F Y') }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 0; color: #64748b;">Waktu</td>
+                                <td style="padding: 3px 0;">{{ $item->jam_mulai }} - {{ $item->jam_selesai }} WIB</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 0; color: #64748b;">Kegiatan</td>
+                                <td style="padding: 3px 0;">{{ $item->nama_kegiatan }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 0; color: #64748b;">Jumlah Peserta</td>
+                                <td style="padding: 3px 0;">{{ $item->jumlah_peserta ? $item->jumlah_peserta . ' Orang' : '-' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                @endforeach
+            @else
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #08a6d9; border-radius: 6px; padding: 14px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <strong style="color: #0f172a; font-size: 14px;">{{ $booking->room->name ?? 'Ruangan' }}</strong>
+                        <span style="font-weight: 700; color: #08a6d9; font-size: 12px;">{{ $booking->kode_booking }}</span>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr>
+                            <td style="padding: 3px 0; color: #64748b; width: 32%;">Tanggal</td>
+                            <td style="padding: 3px 0; font-weight: 600;">{{ $booking->tanggal->translatedFormat('l, d F Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 3px 0; color: #64748b;">Waktu</td>
+                            <td style="padding: 3px 0;">{{ $booking->jam_mulai }} - {{ $booking->jam_selesai }} WIB</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 3px 0; color: #64748b;">Kegiatan</td>
+                            <td style="padding: 3px 0;">{{ $booking->nama_kegiatan }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 3px 0; color: #64748b;">Jumlah Peserta</td>
+                            <td style="padding: 3px 0;">{{ $booking->jumlah_peserta ? $booking->jumlah_peserta . ' Orang' : '-' }}</td>
+                        </tr>
+                    </table>
+                </div>
+            @endif
+
             <div style="text-align: center; margin: 30px 0 10px;">
-                <a href="{{ route('admin.peminjaman.show', $booking) }}" style="background: #08a6d9; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
-                    Buka Panel Admin & Proses
+                <a href="{{ route('admin.peminjaman.index') }}" style="background: #08a6d9; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-block;">
+                    Buka Panel Admin & Periksa Peminjaman
                 </a>
             </div>
         </div>

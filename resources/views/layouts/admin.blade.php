@@ -237,8 +237,24 @@
         // Initialize
         attachNavListeners();
         initModals(); // Init modals on first load
+
+        // Handle auto-spinner on form submit to prevent double-click and indicate background notifications
+        document.addEventListener('submit', function(e) {
+            const btn = e.target.querySelector('button[type="submit"]');
+            if (btn && !btn.disabled && !e.defaultPrevented) {
+                setTimeout(() => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.85';
+                    btn.style.cursor = 'not-allowed';
+                    btn.innerHTML = '<span style="display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin 0.75s linear infinite;margin-right:6px;vertical-align:-2px;"></span> Memproses...';
+                }, 10);
+            }
+        });
     })();
     </script>
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 
 </body>
 </html>
