@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PeminjamanController;
+use App\Http\Controllers\Admin\RiwayatController;
 use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\HomeController;
@@ -64,6 +65,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('/peminjaman/{booking}/status', [PeminjamanController::class, 'updateStatus'])->name('peminjaman.status');
     Route::post('/peminjaman/{booking}/reschedule', [PeminjamanController::class, 'reschedule'])->name('peminjaman.reschedule');
     Route::delete('/peminjaman/{booking}', [PeminjamanController::class, 'destroy'])->name('peminjaman.destroy');
+
+    // Riwayat Penggunaan Ruangan
+    Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
 
     // Ruangan
     Route::get('/ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
