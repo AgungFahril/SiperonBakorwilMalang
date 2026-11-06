@@ -103,44 +103,24 @@
         
     </main>
 
-    <!-- Loading Bar -->
-    <div class="page-loading-bar" id="loadingBar"></div>
+    <!-- Global Loading Animation Component -->
+    @include('partials.loading-screen')
 
     <script>
     (function() {
         const contentArea = document.getElementById('admin-content');
-        const loadingBar = document.getElementById('loadingBar');
-
-        // Attach SPA navigation to all admin nav links
-        function attachNavListeners() {
-            document.querySelectorAll('.sidebar-nav .nav-item').forEach(link => {
-                const href = link.getAttribute('href');
-                // Skip links that are "#" or external (non-admin)
-                if (!href || href === '#' || !href.includes('/admin/')) return;
-
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (window.location.pathname === new URL(href, window.location.origin).pathname) return;
-                    navigateTo(href);
-                });
-            });
-
-            // Also handle brand logo click
-            const brand = document.querySelector('.sidebar-brand');
-            if (brand) {
-                brand.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    navigateTo(this.getAttribute('href'));
-                });
-            }
-        }
 
         async function navigateTo(url) {
-            // Show loading bar
-            loadingBar.classList.add('active');
+            if (window.SIPERON_LOADER) {
+                window.SIPERON_LOADER.show('Memuat halaman');
+            }
 
-            // Fade out current content
-            contentArea.classList.add('content-exit');
+            // Redupkan konten saat memuat tanpa membuat layar putih kosong
+            if (contentArea) {
+                contentArea.style.opacity = '0.4';
+                contentArea.style.pointerEvents = 'none';
+                contentArea.style.transition = 'opacity 0.15s ease';
+            }
 
             try {
                 const response = await fetch(url);
@@ -155,9 +135,6 @@
                 const newTitle = doc.querySelector('title');
 
                 if (newContent) {
-                    // Wait for exit animation
-                    await new Promise(r => setTimeout(r, 150));
-
                     // Replace content
                     contentArea.innerHTML = newContent.innerHTML;
 
@@ -172,26 +149,29 @@
 
                     // Re-bind modal events for new content
                     initModals();
-
-                    // Animate in
-                    contentArea.classList.remove('content-exit');
-                    contentArea.classList.add('content-enter');
                     
                     // Scroll to top of content
                     contentArea.scrollTop = 0;
-
-                    setTimeout(() => {
-                        contentArea.classList.remove('content-enter');
-                    }, 300);
+                } else {
+                    // Fallback to normal navigation
+                    window.location.href = url;
                 }
             } catch (err) {
                 // On error, fallback to normal navigation
                 window.location.href = url;
             } finally {
-                // Hide loading bar
-                setTimeout(() => loadingBar.classList.remove('active'), 300);
+                if (contentArea) {
+                    contentArea.style.opacity = '1';
+                    contentArea.style.pointerEvents = 'all';
+                }
+                if (window.SIPERON_LOADER) {
+                    window.SIPERON_LOADER.hide();
+                }
             }
         }
+
+        // Ekspos ke window agar ditangkap oleh event listener link global di partial loading-screen
+        window.adminNavigateTo = navigateTo;
 
         function updateActiveNav(url) {
             const path = new URL(url, window.location.origin).pathname;
@@ -239,9 +219,8 @@
             });
         }
 
-        // Initialize
-        attachNavListeners();
-        initModals(); // Init modals on first load
+        // Initialize modals on first load
+        initModals();
 
         // Handle auto-spinner on form submit to prevent double-click and indicate background notifications
         document.addEventListener('submit', function(e) {

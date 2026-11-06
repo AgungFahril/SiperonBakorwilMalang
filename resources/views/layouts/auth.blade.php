@@ -205,5 +205,6 @@
         
         @yield('content')
     </div>
+    @include('partials.loading-screen')
 </body>
 </html>

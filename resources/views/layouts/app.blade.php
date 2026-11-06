@@ -278,6 +278,7 @@
             });
         });
     </script>
+    @include('partials.loading-screen')
     @yield('scripts')
 </body>
 </html>
