@@ -13,10 +13,31 @@
                 @endif
             </p>
         </div>
-        <a href="{{ route('admin.peminjaman.index') }}" style="display: inline-flex; align-items: center; gap: 6px; color: #08a6d9; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            Kembali ke Daftar
-        </a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="{{ route('admin.peminjaman.index') }}" style="display: inline-flex; align-items: center; gap: 6px; color: #08a6d9; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Kembali ke Daftar
+            </a>
+            @if(isset($groupBookings) && $groupBookings->count() > 1)
+                <form action="{{ route('admin.peminjaman.destroyGroup', $booking->group_code) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Yakin ingin menghapus seluruh paket pengajuan ini ({{ $groupBookings->count() }} ruangan)? Data yang dihapus tidak dapat dikembalikan.')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        Hapus Seluruh Paket
+                    </button>
+                </form>
+            @else
+                <form action="{{ route('admin.peminjaman.destroy', $booking) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Yakin ingin menghapus data peminjaman ini? Data yang dihapus tidak dapat dikembalikan.')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
+                        Hapus Peminjaman
+                    </button>
+                </form>
+            @endif
+        </div>
     </div>
 
     @if(session('success'))
