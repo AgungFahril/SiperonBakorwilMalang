@@ -35,7 +35,7 @@ class WhatsAppService
     }
 
     /**
-     * Buat URL wa.me untuk 1-klik langsung membuka WhatsApp Web/Aplikasi dengan pesan terisi otomatis.
+     * Buat URL langsung ke WhatsApp Web dengan nomor dan pesan terisi otomatis (melewati halaman perantara wa.me).
      */
     public static function generateWaLink(?string $targetPhone, string $message): string
     {
@@ -43,7 +43,7 @@ class WhatsAppService
         if (!$phone) {
             return '#';
         }
-        return "https://wa.me/{$phone}?text=" . rawurlencode($message);
+        return "https://web.whatsapp.com/send?phone={$phone}&text=" . rawurlencode($message);
     }
 
     /**
