@@ -159,9 +159,25 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 1.25rem;">
-                    <label for="keterangan">Keterangan / Catatan Tambahan (Opsional)</label>
-                    <textarea id="keterangan" name="keterangan" rows="3" placeholder="Informasi tambahan terkait tata ruang, kebutuhan teknis khusus, susunan acara, dll...">{{ old('keterangan') }}</textarea>
+                <div class="keterangan-card-box">
+                    <div class="keterangan-header-row">
+                        <label for="keterangan" class="keterangan-label-title" style="margin: 0; cursor: pointer;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#08a6d9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            <span>Keterangan / Catatan Tambahan</span>
+                            <span class="optional-pill">Opsional</span>
+                        </label>
+                        <span class="keterangan-counter" id="keteranganCharCount">Maks. 500 karakter</span>
+                    </div>
+
+                    <textarea id="keterangan" name="keterangan" rows="4" maxlength="500"
+                              class="keterangan-textarea"
+                              placeholder="Tuliskan catatan pendukung bila ada, contoh: kebutuhan tata letak meja/kursi, proyektor tambahan, sound system, atau susunan acara khusus..."
+                              oninput="updateKeteranganCounter(this)">{{ old('keterangan') }}</textarea>
+
+                    <small class="field-hint" style="display: flex; align-items: flex-start; gap: 6px; margin-top: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#08a6d9" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        <span>Informasi ini akan langsung diterima dan dibaca oleh petugas pengelola ruangan Bakorwil III Malang saat memverifikasi permohonan.</span>
+                    </small>
                 </div>
             </div>
 
@@ -493,11 +509,99 @@
         font-weight: 700;
     }
 
+    .optional-pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        padding: 2px 8px;
+        border-radius: 6px;
+        margin-left: 6px;
+        letter-spacing: 0.3px;
+        vertical-align: middle;
+    }
+
     .field-hint {
         color: #64748b;
-        font-size: 12px;
-        margin-top: 4px;
+        font-size: 12.5px;
+        margin-top: 5px;
         display: block;
+        line-height: 1.5;
+    }
+
+    /* Keterangan / Catatan Tambahan Styling */
+    .keterangan-card-box {
+        background: #fcfdfd;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 14px;
+        padding: 20px 22px;
+        margin-top: 1.75rem;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .keterangan-card-box:focus-within {
+        border-color: #08a6d9;
+        box-shadow: 0 4px 16px rgba(8, 166, 217, 0.1);
+        background: #ffffff;
+    }
+
+    .keterangan-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .keterangan-label-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .keterangan-counter {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .keterangan-textarea {
+        width: 100% !important;
+        min-height: 115px;
+        padding: 14px 18px !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        font-size: 14.5px !important;
+        font-family: inherit !important;
+        line-height: 1.6 !important;
+        color: #1e293b !important;
+        background: #ffffff !important;
+        resize: vertical !important;
+        box-sizing: border-box !important;
+        transition: all 0.25s ease !important;
+    }
+
+    .keterangan-textarea:hover {
+        border-color: #cbd5e1 !important;
+    }
+
+    .keterangan-textarea:focus {
+        outline: none !important;
+        border-color: #08a6d9 !important;
+        background: #ffffff !important;
+        box-shadow: 0 0 0 4px rgba(8, 166, 217, 0.15) !important;
+    }
+
+    .keterangan-textarea::placeholder {
+        color: #94a3b8;
+        font-size: 13.5px;
     }
 
     /* Room Slot Item */
@@ -1423,8 +1527,29 @@
         }
     }
 
+    // Live character counter for Keterangan
+    function updateKeteranganCounter(textarea) {
+        const counter = document.getElementById('keteranganCharCount');
+        if (!counter) return;
+        const len = textarea.value.length;
+        const max = textarea.getAttribute('maxlength') || 500;
+        counter.textContent = `${len} / ${max} karakter`;
+        if (len > max * 0.9) {
+            counter.style.color = '#e11d48';
+            counter.style.fontWeight = '700';
+        } else {
+            counter.style.color = '#94a3b8';
+            counter.style.fontWeight = '500';
+        }
+    }
+
     // Inisialisasi saat DOM siap
     document.addEventListener('DOMContentLoaded', function() {
+        // Init counter keterangan jika ada value (misal dari old())
+        const ketInput = document.getElementById('keterangan');
+        if (ketInput && ketInput.value) {
+            updateKeteranganCounter(ketInput);
+        }
         // Jika ada data old() (karena validation error), render ulang semua slot tersebut
         if (Array.isArray(OLD_ROOMS) && OLD_ROOMS.length > 0) {
             OLD_ROOMS.forEach(oldItem => {

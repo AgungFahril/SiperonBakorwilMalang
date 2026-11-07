@@ -4,6 +4,16 @@
    Simpan di: resources/css/style.css
 ========================================= */
 
+:root {
+    --bakorwil-cyan: #08a6d9;
+    --bakorwil-cyan-dark: #0284c7;
+    --bakorwil-cyan-light: #e0f2fe;
+    --bakorwil-blue: #0284c7;
+    --bakorwil-blue-light: #e0f2fe;
+    --bakorwil-orange: #f97316;
+    --bakorwil-orange-light: #ffedd5;
+}
+
 
 /* =========================================
    RESET
@@ -1023,22 +1033,41 @@ section, footer {
     margin-bottom: 10px;
 }
 
-.form-group input {
+.form-group input,
+.form-group textarea,
+.form-group select {
     width: 100%;
-    padding: 15px 18px;
+    padding: 14px 18px;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
     font-size: 15px;
+    font-family: inherit;
     color: #1e293b;
     background: #f8fafc;
     transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
-.form-group input:focus {
-    outline: none;
-    border-color: #0ea5e9;
+.form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.6;
+}
+
+.form-group input:hover,
+.form-group textarea:hover,
+.form-group select:hover {
+    border-color: #cbd5e1;
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #08a6d9;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(8, 166, 217, 0.15);
 }
 
 .form-actions {
