@@ -36,17 +36,23 @@
         justify-content: center;
         width: 38px;
         height: 38px;
-        border-radius: 8px;
+        border-radius: 10px;
         background: #f1f5f9;
         border: 1px solid #cbd5e1;
         color: #334155;
         text-decoration: none;
         font-weight: 700;
-        transition: all 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
     .month-nav-btn:hover {
         background: #e2e8f0;
         color: var(--bakorwil-blue);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(8, 166, 217, 0.2);
+    }
+    .month-nav-btn:active {
+        transform: translateY(0);
     }
 
     .month-input-group {
@@ -458,7 +464,8 @@
 
             <div style="display: flex; gap: 6px;">
                 <button type="submit" class="btn btn-primary" style="padding: 0.55rem 1rem;">
-                    Filter
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                    <span>Filter</span>
                 </button>
                 @if($roomId || $statusFilter !== 'digunakan' || $search)
                     <a href="{{ route('admin.riwayat.index', ['bulan' => $selectedMonthStr]) }}" class="btn btn-secondary" style="padding: 0.55rem 0.85rem;" title="Reset filter">
@@ -658,8 +665,9 @@
                                 @endif
                             </td>
                             <td class="action-column" style="text-align: center;">
-                                <a href="{{ route('admin.peminjaman.show', $booking) }}" class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.78rem; text-decoration: none;" title="Lihat Detail Peminjaman">
-                                    Detail
+                                <a href="{{ route('admin.peminjaman.show', $booking) }}" class="btn-table-detail" title="Lihat Detail Peminjaman">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                                    <span>Detail</span>
                                 </a>
                             </td>
                         </tr>

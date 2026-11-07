@@ -17,7 +17,10 @@
             <input type="text" name="kode_booking" value="{{ old('kode_booking', request('kode_booking')) }}" placeholder="Masukkan Kode Booking atau Kode Paket..."
                    style="flex: 1 1 240px; padding: 12px 18px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;"
                    required>
-            <button type="submit" class="btn btn-primary" style="white-space: nowrap; flex: 0 0 auto; padding: 12px 24px; font-weight: 700;">Cek Status</button>
+            <button type="submit" class="btn btn-primary" style="white-space: nowrap; flex: 0 0 auto; padding: 12px 24px; font-weight: 700;">
+                <span>Cek Status</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
         </form>
 
         @if ($errors->any())
@@ -172,7 +175,10 @@
                 <div style="margin-top: 1.5rem; background: #e0e7ff; border-left: 4px solid #6366f1; padding: 1.25rem 1.5rem; border-radius: 10px;">
                     <p style="font-weight: 700; color: #3730a3; margin: 0 0 0.5rem 0;">Peminjaman Anda Perlu Dijadwalkan Ulang</p>
                     <p style="font-size: 0.9rem; color: #4338ca; margin: 0 0 1rem 0;">Silakan ajukan permohonan baru untuk memilih tanggal alternatif lain yang tersedia.</p>
-                    <a href="{{ route('booking.form.multi') }}" class="btn btn-primary" style="display: inline-block;">Ajukan Peminjaman Baru</a>
+                    <a href="{{ route('booking.form.multi') }}" class="btn btn-primary">
+                        <span>Ajukan Peminjaman Baru</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
                 </div>
             @endif
 

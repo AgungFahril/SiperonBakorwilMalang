@@ -209,7 +209,8 @@
 
                                 <div class="room-action-row">
                                     <a href="{{ route('booking.form.multi', ['room' => $room->id, 'tanggal' => $selectedDate->format('Y-m-d')]) }}" class="btn-action-book">
-                                        Ajukan Peminjaman Ruangan Ini &rarr;
+                                        <span>Ajukan Peminjaman Ruangan Ini</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                     </a>
                                 </div>
                             @else
@@ -253,7 +254,8 @@
 
                                 <div class="room-action-row">
                                     <a href="{{ route('booking.form.multi', ['room' => $room->id, 'tanggal' => $selectedDate->format('Y-m-d')]) }}" class="btn-action-book btn-action-alternative">
-                                        Ajukan Peminjaman (Pilih Jam Lain) &rarr;
+                                        <span>Ajukan Peminjaman (Pilih Jam Lain)</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                     </a>
                                 </div>
                             @endif

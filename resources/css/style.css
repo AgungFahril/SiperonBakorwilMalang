@@ -250,38 +250,50 @@ img {
 
 /* Auth Buttons Navbar */
 .nav-auth-btn {
-    padding: 8px 24px;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 9px 22px;
+    border-radius: 10px;
+    font-size: 13.5px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    transition: all 0.25s ease-in-out;
-    text-transform: uppercase;
-    display: inline-block;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
 }
 
 .nav-auth-btn-outline {
-    border: 2px solid #08a6d9;
+    border: 1.5px solid #08a6d9;
     color: #08a6d9;
     background: transparent;
+    box-shadow: 0 2px 8px rgba(8, 166, 217, 0.12);
 }
 
 .nav-auth-btn-outline:hover {
-    background: #08a6d9;
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.2);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(8, 166, 217, 0.3);
 }
 
 .nav-auth-btn-primary {
-    background: linear-gradient(135deg, #08a6d9, #18b9e6);
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
     color: #ffffff;
-    border: 2px solid transparent;
+    border: 1.5px solid transparent;
+    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.25);
 }
 
 .nav-auth-btn-primary:hover {
-    background: linear-gradient(135deg, #068ebf, #08a6d9);
-    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.3);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    box-shadow: 0 8px 20px rgba(8, 166, 217, 0.35);
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+.nav-auth-btn:active {
+    transform: translateY(0);
 }
 
 .nav-button {
@@ -395,31 +407,70 @@ img {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 48px;
-    padding: 0 25px;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: 0.25s;
+    gap: 8px;
+    min-height: 46px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.btn svg {
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.btn:hover svg {
+    transform: translateX(4px);
+}
+
+.btn:active {
+    transform: translateY(0);
 }
 
 .btn-primary {
-    background: #08a6d9;
-    color: #ffffff;
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(8, 166, 217, 0.25);
+    border: none;
 }
 
 .btn-primary:hover {
-    background: #078bb7;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(8, 166, 217, 0.35);
+    color: #ffffff !important;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(8, 166, 217, 0.2);
 }
 
 .btn-outline {
-    border: 1px solid #08a6d9;
-    color: #08a6d9;
+    background: #ffffff;
+    color: #0284c7 !important;
+    border: 1.5px solid #08a6d9;
+    box-shadow: 0 2px 8px rgba(8, 166, 217, 0.12);
 }
 
 .btn-outline:hover {
-    background: #08a6d9;
-    color: white;
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
+    color: #ffffff !important;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(8, 166, 217, 0.3);
+}
+
+.btn-outline:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(8, 166, 217, 0.2);
 }
 
 
@@ -819,12 +870,34 @@ section, footer {
 
 .btn-white {
     flex-shrink: 0;
-    background: white;
-    color: #079ac8;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    color: #0284c7 !important;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
 }
 
 .btn-white:hover {
+    background: #f0f9ff;
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    color: #0369a1 !important;
+}
+
+.btn-white svg {
+    transition: transform 0.25s ease;
+}
+
+.btn-white:hover svg {
+    transform: translateX(4px);
 }
 
 
@@ -1229,12 +1302,12 @@ section, footer {
     padding: 7px 4px;
     font-size: 11px;
     font-weight: 700;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid #e2e8f0;
     background: #f8fafc;
     color: #475569;
     cursor: pointer;
-    transition: 0.15s;
+    transition: all 0.25s ease;
     text-align: center;
     font-family: inherit;
 }
@@ -1242,12 +1315,14 @@ section, footer {
 .btn-quick-date:hover {
     background: #e2e8f0;
     color: #0f172a;
+    transform: translateY(-1px);
 }
 
 .btn-quick-date.active {
-    background: #08a6d9;
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
     color: #ffffff;
-    border-color: #08a6d9;
+    border-color: transparent;
+    box-shadow: 0 3px 8px rgba(8, 166, 217, 0.3);
 }
 
 /* Kalender Mini */
@@ -1824,35 +1899,56 @@ section, footer {
 .btn-action-book {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    background: #08a6d9;
-    color: #ffffff;
-    padding: 10px 22px;
-    border-radius: 8px;
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
+    color: #ffffff !important;
+    padding: 11px 22px;
+    border-radius: 10px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: none;
-    transition: 0.2s;
+    transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(8, 166, 217, 0.25);
+    border: none;
 }
 
 .btn-action-book:hover {
-    background: #068ab5;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(8, 166, 217, 0.35);
-    color: #ffffff;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(8, 166, 217, 0.35);
+    color: #ffffff !important;
+}
+
+.btn-action-book svg {
+    transition: transform 0.25s ease;
+}
+
+.btn-action-book:hover svg {
+    transform: translateX(4px);
 }
 
 .btn-action-alternative {
     background: #ffffff;
-    color: #08a6d9;
-    border: 1px solid #08a6d9;
-    box-shadow: none;
+    color: #0284c7 !important;
+    border: 1.5px solid #08a6d9;
+    box-shadow: 0 2px 8px rgba(8, 166, 217, 0.12);
 }
 
 .btn-action-alternative:hover {
-    background: #f0f9ff;
-    color: #068ab5;
+    background: linear-gradient(135deg, #08a6d9, #0284c7);
+    color: #ffffff !important;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(8, 166, 217, 0.3);
+}
+
+.btn-action-alternative svg {
+    transition: transform 0.25s ease;
+}
+
+.btn-action-alternative:hover svg {
+    transform: translateX(4px);
 }
 
 .empty-rooms-state {

@@ -342,19 +342,34 @@
         gap: 8px;
         background: #f0fdfa;
         color: #0f766e;
-        border: 1px solid #ccfbf1;
-        padding: 8px 16px;
-        border-radius: 8px;
+        border: 1.5px solid #08a6d9;
+        padding: 9px 18px;
+        border-radius: 10px;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(8, 166, 217, 0.12);
+    }
+
+    .btn-open-catalog svg {
+        transition: transform 0.25s ease;
     }
 
     .btn-open-catalog:hover {
-        background: var(--bakorwil-cyan);
+        background: linear-gradient(135deg, #08a6d9, #0284c7);
         color: #ffffff;
-        border-color: var(--bakorwil-cyan);
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(8, 166, 217, 0.3);
+    }
+
+    .btn-open-catalog:hover svg {
+        transform: scale(1.1);
+    }
+
+    .btn-open-catalog:active {
+        transform: translateY(0);
     }
 
     /* Rules Box */
@@ -443,17 +458,33 @@
         background: #f0fdfa;
         color: #0f766e;
         border: 1.5px solid #0d9488;
-        padding: 8px 16px;
-        border-radius: 8px;
+        padding: 9px 18px;
+        border-radius: 10px;
         font-size: 13px;
         font-weight: 700;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(13, 148, 136, 0.15);
+    }
+
+    .btn-add-room-top svg {
+        transition: transform 0.25s ease;
     }
 
     .btn-add-room-top:hover {
-        background: #0d9488;
+        background: linear-gradient(135deg, #0d9488, #0f766e);
         color: #ffffff;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(13, 148, 136, 0.3);
+    }
+
+    .btn-add-room-top:hover svg {
+        transform: rotate(90deg);
+    }
+
+    .btn-add-room-top:active {
+        transform: translateY(0);
     }
 
     /* Form Fields */
@@ -971,20 +1002,32 @@
     }
 
     .btn-select-this-room {
-        background: #08a6d9;
+        background: linear-gradient(135deg, #08a6d9, #0284c7);
         color: #ffffff;
         border: none;
-        padding: 8px 12px;
-        border-radius: 7px;
-        font-size: 12.5px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 13px;
         font-weight: 700;
         cursor: pointer;
         width: 100%;
-        transition: background 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(8, 166, 217, 0.25);
+        transition: all 0.3s ease;
     }
 
     .btn-select-this-room:hover {
-        background: #0284c7;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(8, 166, 217, 0.35);
+        color: #ffffff;
+    }
+
+    .btn-select-this-room:active {
+        transform: translateY(0);
     }
 
     @media (max-width: 768px) {

@@ -231,7 +231,7 @@
 
                         <!-- AKSI: HANYA TOMBOL LIHAT DETAIL -->
                         <td style="text-align: center;">
-                            <a href="{{ route('admin.peminjaman.show', $first) }}" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: #e0f2fe; color: #0284c7; border: 1.5px solid #bae6fd; border-radius: 8px; font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: all 0.15s ease;" onmouseover="this.style.background='#0284c7'; this.style.color='#ffffff';" onmouseout="this.style.background='#e0f2fe'; this.style.color='#0284c7';">
+                            <a href="{{ route('admin.peminjaman.show', $first) }}" class="btn-table-detail" title="Lihat Detail Peminjaman">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 15px; height: 15px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
                                 <span>Lihat Detail</span>
                             </a>

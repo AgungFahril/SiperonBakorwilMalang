@@ -129,11 +129,20 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(8, 166, 217, 0.3);
             margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .auth-button:hover {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(8, 166, 217, 0.45);
+        }
+
+        .auth-button:active {
+            transform: translateY(0);
         }
 
         .auth-footer {
