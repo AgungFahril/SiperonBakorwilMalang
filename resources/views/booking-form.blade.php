@@ -274,6 +274,8 @@
     });
 
     $minDateAllowed = \Carbon\Carbon::now()->addDays(3)->format('Y-m-d');
+    $adminWaRaw = $settings['wa_admin_phone'] ?? env('ADMIN_WA_PHONE', '089526312780');
+    $adminWaClean = \App\Services\WhatsAppService::formatPhoneNumber($adminWaRaw);
 @endphp
 
 <script>
@@ -281,6 +283,7 @@
     const MIN_DATE_ALLOWED = "{{ $minDateAllowed }}";
     const DEFAULT_PRESELECTED_ROOM = {{ $selectedRoomId ?? ($rooms->first()->id ?? 0) }};
     const DEFAULT_PRESELECTED_DATE = "{{ $defaultDate ?? $minDateAllowed }}";
+    const ADMIN_WA_PHONE = "{{ $adminWaClean }}";
 
     // Simpan data slot lama dari old() jika terjadi error validation
     const OLD_ROOMS = {!! json_encode(old('rooms', [])) !!};
@@ -602,6 +605,115 @@
     .keterangan-textarea::placeholder {
         color: #94a3b8;
         font-size: 13.5px;
+    }
+
+    /* Capacity Alert Box */
+    .capacity-alert-box {
+        margin-top: 10px;
+        background: #fffbeb;
+        border: 1.5px solid #fde68a;
+        border-left: 4px solid #f59e0b;
+        border-radius: 12px;
+        padding: 12px 14px;
+        animation: fadeInCapacityAlert 0.25s ease-out;
+    }
+
+    @keyframes fadeInCapacityAlert {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .capacity-alert-header {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .capacity-alert-icon-wrap {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #fef3c7;
+        color: #d97706;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .capacity-alert-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #92400e;
+        margin-bottom: 2px;
+    }
+
+    .capacity-alert-desc {
+        font-size: 12.5px;
+        color: #78350f;
+        line-height: 1.5;
+    }
+
+    .capacity-alert-note {
+        font-size: 12px;
+        color: #b45309;
+        line-height: 1.45;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed #fcd34d;
+    }
+
+    .capacity-alert-actions {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* WhatsApp Button in Capacity Alert (matching unified button style) */
+    .btn-wa-capacity {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 9px 16px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
+        transition: all 0.3s ease;
+    }
+
+    .btn-wa-capacity svg {
+        transition: transform 0.25s ease;
+    }
+
+    .btn-wa-capacity:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(16, 185, 129, 0.38);
+        color: #ffffff !important;
+    }
+
+    .btn-wa-capacity:hover svg {
+        transform: scale(1.15);
+    }
+
+    .btn-wa-capacity:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
     }
 
     /* Room Slot Item */
@@ -1216,7 +1328,7 @@
                         <label for="peserta_${index}">Jumlah Peserta <span class="required-star">*</span></label>
                         <input type="number" id="peserta_${index}" name="rooms[${index}][jumlah_peserta]"
                                value="${escapeHtml(jumlahPeserta)}" placeholder="Contoh: 35" min="1" required oninput="validateCapacityHint(${index})">
-                        <small class="field-hint" id="capacityHint_${index}"></small>
+                        <div id="capacityHint_${index}"></div>
                     </div>
                 </div>
 
@@ -1347,7 +1459,7 @@
         updateLivePreview(index, roomId);
     }
 
-    // Hint kapasitas
+    // Hint kapasitas & penanganan batas peserta
     function validateCapacityHint(index) {
         const select = document.getElementById(`room_select_${index}`);
         const pesertaInput = document.getElementById(`peserta_${index}`);
@@ -1357,14 +1469,83 @@
         const room = ROOMS_DATA[select.value];
         if (!room) return;
 
-        const maxCap = room.capacity;
+        const maxCap = parseInt(room.capacity || 0);
         const val = parseInt(pesertaInput.value || 0);
 
         if (val > maxCap) {
-            hint.innerHTML = `<span style="color: #dc2626; font-weight: 600;">⚠️ Perhatian: Jumlah peserta (${val}) melebihi kapasitas standar ruangan ini (${maxCap} kursi).</span>`;
+            pesertaInput.style.borderColor = '#f59e0b';
+            hint.innerHTML = `
+                <div class="capacity-alert-box">
+                    <div class="capacity-alert-header">
+                        <div class="capacity-alert-icon-wrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <div>
+                            <div class="capacity-alert-title">Jumlah Peserta Melebihi Kapasitas Standar</div>
+                            <div class="capacity-alert-desc">
+                                Jumlah peserta yang diajukan (<strong>${val} orang</strong>) melebihi kapasitas standar ruangan <strong>${escapeHtml(room.name)}</strong> (<strong>${maxCap} kursi</strong>).
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="capacity-alert-note">
+                        Butuh penambahan kursi/meja ekstra atau penyesuaian tata letak ruangan? Anda dapat langsung menghubungi admin pengelola via WhatsApp untuk konfirmasi penambahan fasilitas sebelum melanjutkan pengajuan:
+                    </div>
+
+                    <div class="capacity-alert-actions">
+                        <button type="button" onclick="hubungiWaKapasitas(${index})" class="btn-wa-capacity">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            <span>Hubungi Admin via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else if (val > 0) {
+            pesertaInput.style.borderColor = '';
+            hint.innerHTML = `<small class="field-hint" style="color: #059669; font-weight: 500;">✓ Kapasitas mencukupi (Kapasitas standar: <strong>${maxCap} kursi</strong>).</small>`;
         } else {
-            hint.innerHTML = `Kapasitas ruangan ini: <strong>${maxCap} kursi</strong>.`;
+            pesertaInput.style.borderColor = '';
+            hint.innerHTML = `<small class="field-hint">Kapasitas standar ruangan ini: <strong>${maxCap} kursi</strong>.</small>`;
         }
+    }
+
+    // Buka WhatsApp untuk konsultasi penambahan kapasitas
+    function hubungiWaKapasitas(index) {
+        const select = document.getElementById(`room_select_${index}`);
+        const pesertaInput = document.getElementById(`peserta_${index}`);
+        const tglInput = document.getElementById(`tanggal_${index}`);
+        const kegiatanInput = document.getElementById(`kegiatan_${index}`);
+        const pemohonInput = document.getElementById('nama_pemohon');
+        const instansiInput = document.getElementById('instansi');
+
+        const room = (select && ROOMS_DATA[select.value]) ? ROOMS_DATA[select.value] : null;
+        const val = pesertaInput ? (pesertaInput.value || 0) : 0;
+        const roomName = room ? room.name : 'Ruangan Bakorwil';
+        const roomCap = room ? room.capacity : 0;
+        const namaPemohon = pemohonInput ? pemohonInput.value.trim() : '';
+        const instansi = instansiInput ? instansiInput.value.trim() : '';
+        const kegiatan = kegiatanInput ? kegiatanInput.value.trim() : '';
+        const tanggal = tglInput ? tglInput.value : '';
+
+        let text = `Halo Admin SIPERON Bakorwil III Malang, saya ingin berkonsultasi mengenai peminjaman ruangan.`;
+        if (namaPemohon) {
+            text += `\n\n*Nama Pemohon:* ${namaPemohon}`;
+            if (instansi) {
+                text += ` (${instansi})`;
+            }
+        }
+        if (kegiatan) {
+            text += `\n*Kegiatan:* ${kegiatan}`;
+        }
+        text += `\n*Ruangan:* ${roomName}`;
+        text += `\n*Rencana Jumlah Peserta:* ${val} orang (Kapasitas standar: ${roomCap} kursi)`;
+        if (tanggal) {
+            text += `\n*Tanggal Kegiatan:* ${tanggal}`;
+        }
+        text += `\n\nApakah dimungkinkan penambahan kursi/fasilitas tambahan untuk acara kami tersebut? Mohon arahan dan informasinya. Terima kasih.`;
+
+        const waUrl = 'https://api.whatsapp.com/send?phone=' + ADMIN_WA_PHONE + '&text=' + encodeURIComponent(text);
+        window.open(waUrl, '_blank');
     }
 
     // Validasi jam selesai > jam mulai
