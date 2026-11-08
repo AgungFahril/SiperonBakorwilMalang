@@ -57,16 +57,45 @@ class RuanganController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        // Deteksi berkas HEIC/HEIF dari HP/iPhone dan berikan peringatan edukatif yang jelas
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $f) {
+                if ($f) {
+                    $ext = strtolower($f->getClientOriginalExtension());
+                    if (in_array($ext, ['heic', 'heif'])) {
+                        return back()->withInput()->withErrors([
+                            'images' => 'Foto "' . $f->getClientOriginalName() . '" berformat HEIC (format bawaan kamera iPhone/HP). Mohon simpan/ekspor foto tersebut ke format JPG atau PNG terlebih dahulu sebelum diunggah.'
+                        ]);
+                    }
+                }
+            }
+        }
+
+        $rules = [
             'name'         => 'required|string|max:255',
             'capacity'     => 'required|integer|min:1',
             'facilities'   => 'nullable',
             'description'  => 'nullable|string',
             'images'       => 'nullable|array',
-            'images.*'     => 'image|mimes:jpg,jpeg,png,webp|max:20480',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+            'images.*'     => 'file|mimes:jpg,jpeg,png,webp,jfif,avif,bmp|max:20480',
+            'image'        => 'nullable|file|mimes:jpg,jpeg,png,webp,jfif,avif,bmp|max:20480',
             'is_active'    => 'nullable|boolean',
-        ]);
+        ];
+
+        $messages = [
+            'name.required'       => 'Nama ruangan wajib diisi.',
+            'capacity.required'   => 'Kapasitas ruangan wajib diisi.',
+            'capacity.min'        => 'Kapasitas ruangan minimal 1 orang.',
+            'images.array'        => 'Format daftar foto ruangan tidak valid.',
+            'images.*.file'       => 'Berkas foto harus berupa file yang valid.',
+            'images.*.mimes'      => 'Foto ruangan harus berformat gambar (JPG, JPEG, PNG, atau WEBP).',
+            'images.*.max'        => 'Ukuran masing-masing foto tidak boleh melebihi 20MB.',
+            'image.file'          => 'Berkas foto utama harus berupa file yang valid.',
+            'image.mimes'         => 'Foto utama harus berformat gambar (JPG, JPEG, PNG, atau WEBP).',
+            'image.max'           => 'Ukuran foto utama tidak boleh melebihi 20MB.',
+        ];
+
+        $data = $request->validate($rules, $messages);
 
         $data['facilities'] = $this->processFacilities($request->input('facilities'));
         $data['is_active'] = $request->has('is_active') ? true : true; // default aktif
@@ -112,16 +141,45 @@ class RuanganController extends Controller
      */
     public function update(Request $request, Room $room)
     {
-        $data = $request->validate([
+        // Deteksi berkas HEIC/HEIF dari HP/iPhone dan berikan peringatan edukatif yang jelas
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $f) {
+                if ($f) {
+                    $ext = strtolower($f->getClientOriginalExtension());
+                    if (in_array($ext, ['heic', 'heif'])) {
+                        return back()->withInput()->withErrors([
+                            'images' => 'Foto "' . $f->getClientOriginalName() . '" berformat HEIC (format bawaan kamera iPhone/HP). Mohon simpan/ekspor foto tersebut ke format JPG atau PNG terlebih dahulu sebelum diunggah.'
+                        ]);
+                    }
+                }
+            }
+        }
+
+        $rules = [
             'name'         => 'required|string|max:255',
             'capacity'     => 'required|integer|min:1',
             'facilities'   => 'nullable',
             'description'  => 'nullable|string',
             'images'       => 'nullable|array',
-            'images.*'     => 'image|mimes:jpg,jpeg,png,webp|max:20480',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:20480',
+            'images.*'     => 'file|mimes:jpg,jpeg,png,webp,jfif,avif,bmp|max:20480',
+            'image'        => 'nullable|file|mimes:jpg,jpeg,png,webp,jfif,avif,bmp|max:20480',
             'is_active'    => 'nullable|boolean',
-        ]);
+        ];
+
+        $messages = [
+            'name.required'       => 'Nama ruangan wajib diisi.',
+            'capacity.required'   => 'Kapasitas ruangan wajib diisi.',
+            'capacity.min'        => 'Kapasitas ruangan minimal 1 orang.',
+            'images.array'        => 'Format daftar foto ruangan tidak valid.',
+            'images.*.file'       => 'Berkas foto harus berupa file yang valid.',
+            'images.*.mimes'      => 'Foto ruangan harus berformat gambar (JPG, JPEG, PNG, atau WEBP).',
+            'images.*.max'        => 'Ukuran masing-masing foto tidak boleh melebihi 20MB.',
+            'image.file'          => 'Berkas foto utama harus berupa file yang valid.',
+            'image.mimes'         => 'Foto utama harus berformat gambar (JPG, JPEG, PNG, atau WEBP).',
+            'image.max'           => 'Ukuran foto utama tidak boleh melebihi 20MB.',
+        ];
+
+        $data = $request->validate($rules, $messages);
 
         $data['facilities'] = $this->processFacilities($request->input('facilities'));
         $data['is_active'] = $request->has('is_active') ? true : false;
