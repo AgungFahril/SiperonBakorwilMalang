@@ -6,18 +6,30 @@ use App\Models\Booking;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
 class BookingStatusUpdatedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public Booking $booking;
+    public $booking;
+    public Collection $bookings;
     public string $statusBaru;
     public ?string $alasan;
 
-    public function __construct(Booking $booking, string $statusBaru, ?string $alasan = null)
+    public function __construct($bookingOrBookings, string $statusBaru, ?string $alasan = null)
     {
-        $this->booking = $booking;
+        if ($bookingOrBookings instanceof Booking) {
+            $this->booking = $bookingOrBookings;
+            $this->bookings = collect([$bookingOrBookings]);
+        } elseif ($bookingOrBookings instanceof Collection) {
+            $this->bookings = $bookingOrBookings;
+            $this->booking = $bookingOrBookings->first();
+        } else {
+            $this->bookings = collect($bookingOrBookings);
+            $this->booking = $this->bookings->first();
+        }
+
         $this->statusBaru = $statusBaru;
         $this->alasan = $alasan;
     }
@@ -32,8 +44,13 @@ class BookingStatusUpdatedMail extends Mailable
         ];
 
         $label = $statusLabels[$this->statusBaru] ?? strtoupper($this->statusBaru);
+        $count = $this->bookings->count();
 
-        return $this->subject("Update Status Peminjaman [{$label}] - {$this->booking->kode_booking}")
+        $subject = $count > 1
+            ? "Update Status Peminjaman [{$label}] - {$count} Ruangan ({$this->booking->group_code})"
+            : "Update Status Peminjaman [{$label}] - " . ($this->booking ? $this->booking->kode_booking : '');
+
+        return $this->subject($subject)
                     ->view('emails.booking-status-updated');
     }
 }

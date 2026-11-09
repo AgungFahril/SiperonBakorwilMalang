@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\BookingHistory;
 use App\Models\Room;
+use App\Models\Setting;
 use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        $rooms = Room::where('is_active', true)->get();
+        $rooms = Room::with('images')->where('is_active', true)->get();
 
         // Bulan yang sedang ditampilkan di kalender (default bulan berjalan)
         $month = (int) $request->get('month', now()->month);
@@ -118,7 +119,7 @@ class HomeController extends Controller
         }
 
         // 3. Ambil semua ruangan aktif
-        $rooms = Room::where('is_active', true)->get();
+        $rooms = Room::with('images')->where('is_active', true)->get();
 
         // 4. Ambil booking di tanggal yang dipilih ($selectedDate)
         $dayBookings = Booking::with('room')
@@ -169,13 +170,180 @@ class HomeController extends Controller
         return view('ketersediaan', $viewData);
     }
 
-    // Menampilkan form pengajuan peminjaman untuk 1 ruangan (PUBLIK)
-    public function bookingForm(Room $room)
+    /**
+     * Form Pengajuan Peminjaman Multi-Ruangan (PUBLIK)
+     * Mengizinkan pemohon mengisi identitas 1 kali dan memilih 1 atau lebih ruangan.
+     */
+    public function bookingFormMulti(Request $request)
     {
-        return view('booking-form', compact('room'));
+        $rooms = Room::with('images')->where('is_active', true)->orderBy('name')->get();
+
+        // Pre-selected room ID jika ada parameter query
+        $selectedRoomId = null;
+        if ($request->has('room')) {
+            $selectedRoomId = (int) $request->get('room');
+        } elseif ($request->has('room_id')) {
+            $selectedRoomId = (int) $request->get('room_id');
+        } elseif ($rooms->isNotEmpty()) {
+            $selectedRoomId = $rooms->first()->id;
+        }
+
+        // Default tanggal: minimal H+3
+        $minDate = Carbon::now()->addDays(3)->format('Y-m-d');
+        $defaultDate = $request->get('tanggal', $minDate);
+        if ($defaultDate < $minDate) {
+            $defaultDate = $minDate;
+        }
+
+        $settings = Setting::pluck('value', 'key')->all();
+
+        return view('booking-form', compact('rooms', 'selectedRoomId', 'defaultDate', 'settings'));
     }
 
-    // Menyimpan pengajuan peminjaman dari publik (TANPA LOGIN)
+    /**
+     * Menyimpan pengajuan peminjaman multi-ruangan (PUBLIK)
+     */
+    public function bookingStoreMulti(Request $request)
+    {
+        $request->validate([
+            'nama_pemohon'           => 'required|string|max:255',
+            'instansi'               => 'nullable|string|max:255',
+            'no_whatsapp'            => 'required|string|max:20',
+            'email'                  => 'required|email|max:255',
+            'keterangan'             => 'nullable|string|max:1000',
+            'surat_pengajuan'        => 'required|file|mimes:pdf|max:15360',
+            'rooms'                  => 'required|array|min:1',
+            'rooms.*.room_id'        => 'required|exists:rooms,id',
+            'rooms.*.tanggal'        => 'required|date|after_or_equal:' . Carbon::now()->addDays(3)->format('Y-m-d'),
+            'rooms.*.jam_mulai'      => 'required',
+            'rooms.*.jam_selesai'    => 'required|after:rooms.*.jam_mulai',
+            'rooms.*.nama_kegiatan'  => 'required|string|max:255',
+            'rooms.*.jumlah_peserta' => 'required|integer|min:1',
+        ], [
+            'rooms.required'                 => 'Minimal tentukan 1 ruangan yang ingin dipinjam.',
+            'rooms.*.room_id.required'       => 'Pilih ruangan yang valid.',
+            'rooms.*.tanggal.required'       => 'Tanggal peminjaman wajib diisi.',
+            'rooms.*.tanggal.after_or_equal' => 'Tanggal peminjaman minimal 3 hari dari sekarang.',
+            'rooms.*.jam_selesai.after'      => 'Jam selesai harus lebih akhir dari jam mulai.',
+            'rooms.*.nama_kegiatan.required' => 'Nama kegiatan / keperluan wajib diisi.',
+            'rooms.*.jumlah_peserta.required'=> 'Jumlah peserta wajib diisi.',
+            'surat_pengajuan.required'       => 'Surat permohonan / pengajuan (PDF) wajib diupload.',
+        ]);
+
+        $roomsInput = $request->input('rooms', []);
+
+        // 1. Cek bentrok internal antar slot inputan pengguna sendiri
+        for ($i = 0; $i < count($roomsInput); $i++) {
+            for ($j = $i + 1; $j < count($roomsInput); $j++) {
+                $itemA = $roomsInput[$i];
+                $itemB = $roomsInput[$j];
+
+                if ($itemA['room_id'] == $itemB['room_id'] && $itemA['tanggal'] == $itemB['tanggal']) {
+                    if ($itemA['jam_mulai'] < $itemB['jam_selesai'] && $itemA['jam_selesai'] > $itemB['jam_mulai']) {
+                        $roomObj = Room::find($itemA['room_id']);
+                        $rName = $roomObj ? $roomObj->name : 'Ruangan';
+                        $tgl = Carbon::parse($itemA['tanggal'])->translatedFormat('d F Y');
+                        return back()->withErrors([
+                            'rooms' => "Jadwal untuk {$rName} pada {$tgl} bertabrakan di formulir Anda sendiri ({$itemA['jam_mulai']}-{$itemA['jam_selesai']} dan {$itemB['jam_mulai']}-{$itemB['jam_selesai']})."
+                        ])->withInput();
+                    }
+                }
+            }
+        }
+
+        // 2. Cek bentrok dengan database untuk setiap slot ruangan
+        foreach ($roomsInput as $idx => $item) {
+            $conflict = Booking::where('room_id', $item['room_id'])
+                ->where('tanggal', $item['tanggal'])
+                ->whereIn('status', ['disetujui', 'pending'])
+                ->where(function ($q) use ($item) {
+                    $q->where(function ($q2) use ($item) {
+                        $q2->where('jam_mulai', '<', $item['jam_selesai'])
+                           ->where('jam_selesai', '>', $item['jam_mulai']);
+                    });
+                })
+                ->exists();
+
+            if ($conflict) {
+                $roomObj = Room::find($item['room_id']);
+                $rName = $roomObj ? $roomObj->name : 'Ruangan terpilih';
+                $tglFormatted = Carbon::parse($item['tanggal'])->translatedFormat('d F Y');
+                return back()->withErrors([
+                    "rooms.{$idx}.tanggal" => "Maaf, {$rName} pada tanggal {$tglFormatted} pukul {$item['jam_mulai']} - {$item['jam_selesai']} sudah terisi atau sedang menunggu persetujuan. Silakan sesuaikan waktu atau pilih ruangan lain."
+                ])->withInput();
+            }
+        }
+
+        // 3. Simpan file surat pengajuan (1 berkas untuk seluruh paket peminjaman)
+        $suratPengajuanPath = null;
+        if ($request->hasFile('surat_pengajuan')) {
+            $suratPengajuanPath = $request->file('surat_pengajuan')->store('surat_pengajuan', 'public');
+        }
+
+        // 4. Buat record Booking dalam DB Transaction
+        $createdBookings = collect();
+        $groupCode = Booking::generateGroupCode();
+
+        DB::transaction(function () use ($request, $roomsInput, $suratPengajuanPath, $groupCode, &$createdBookings) {
+            foreach ($roomsInput as $item) {
+                $booking = Booking::create([
+                    'room_id'         => $item['room_id'],
+                    'kode_booking'    => Booking::generateKodeBooking(),
+                    'group_code'      => $groupCode,
+                    'nama_pemohon'    => $request->nama_pemohon,
+                    'instansi'        => $request->instansi,
+                    'no_whatsapp'     => $request->no_whatsapp,
+                    'kontak'          => $request->no_whatsapp,
+                    'email'           => $request->email,
+                    'nama_kegiatan'   => $item['nama_kegiatan'],
+                    'jumlah_peserta'  => $item['jumlah_peserta'],
+                    'tanggal'         => $item['tanggal'],
+                    'jam_mulai'       => $item['jam_mulai'],
+                    'jam_selesai'     => $item['jam_selesai'],
+                    'keterangan'      => $request->keterangan,
+                    'surat_pengajuan' => $suratPengajuanPath,
+                    'status'          => 'pending',
+                ]);
+
+                BookingHistory::create([
+                    'booking_id'        => $booking->id,
+                    'status_sebelumnya' => null,
+                    'status_baru'       => 'pending',
+                    'tanggal_baru'      => $booking->tanggal,
+                    'perubahan'         => 'Pengajuan peminjaman baru (Multi-ruangan)',
+                ]);
+
+                $createdBookings->push($booking->load('room'));
+            }
+        });
+
+        // 5. Kirim Notifikasi Terkonsolidasi (Email, WA, DB Notification)
+        try {
+            $notificationService = new NotificationService();
+            $notificationService->notifyAdminNewBookings($createdBookings);
+        } catch (\Throwable $e) {
+            \Log::error("Gagal mengirim notifikasi multi-booking: " . $e->getMessage());
+        }
+
+        // 6. Redirect ke halaman sukses dengan membawa daftar kode booking
+        $kodes = $createdBookings->pluck('kode_booking')->implode(',');
+        return redirect()->route('booking.success', ['kodes' => $kodes]);
+    }
+
+    /**
+     * Backward-compatibility: Redirect rute /ruangan/{room}/ajukan ke form multi
+     */
+    public function bookingForm(Request $request, Room $room)
+    {
+        return redirect()->route('booking.form.multi', [
+            'room'    => $room->id,
+            'tanggal' => $request->get('tanggal'),
+        ]);
+    }
+
+    /**
+     * Backward-compatibility: Booking store single room
+     */
     public function bookingStore(Request $request, Room $room)
     {
         $data = $request->validate([
@@ -216,6 +384,7 @@ class HomeController extends Controller
 
         // Generate kode booking unik
         $data['kode_booking'] = Booking::generateKodeBooking();
+        $data['group_code']   = $data['kode_booking'];
         $data['kontak'] = $data['no_whatsapp'];
         $data['status'] = 'pending';
 
@@ -234,16 +403,29 @@ class HomeController extends Controller
         $notificationService = new NotificationService();
         $notificationService->notifyAdminNewBooking($booking);
 
-        return redirect()->route('booking.success', ['kode' => $booking->kode_booking]);
+        return redirect()->route('booking.success', ['kodes' => $booking->kode_booking]);
     }
 
-    // Halaman sukses setelah booking
+    /**
+     * Halaman sukses setelah booking (Mendukung 1 atau multi-booking)
+     */
     public function bookingSuccess(Request $request)
     {
-        $kode = $request->get('kode');
-        $booking = Booking::with('room')->where('kode_booking', $kode)->firstOrFail();
+        $kodesParam = $request->get('kodes', $request->get('kode'));
+        if (!$kodesParam) {
+            return redirect()->route('home');
+        }
 
-        return view('booking-success', compact('booking'));
+        $kodes = array_filter(array_map('trim', explode(',', $kodesParam)));
+        $bookings = Booking::with('room')->whereIn('kode_booking', $kodes)->get();
+
+        if ($bookings->isEmpty()) {
+            return redirect()->route('home');
+        }
+
+        $booking = $bookings->first();
+
+        return view('booking-success', compact('bookings', 'booking'));
     }
 
     // Form cek booking
@@ -259,8 +441,11 @@ class HomeController extends Controller
             'kode_booking' => 'required|string',
         ]);
 
+        $searchCode = trim(strtoupper($request->kode_booking));
+
         $booking = Booking::with(['room', 'histories.admin'])
-            ->where('kode_booking', strtoupper($request->kode_booking))
+            ->where('kode_booking', $searchCode)
+            ->orWhere('group_code', $searchCode)
             ->first();
 
         if (!$booking) {
@@ -269,6 +454,10 @@ class HomeController extends Controller
             ])->withInput();
         }
 
-        return view('cek-booking', compact('booking'));
+        $groupBookings = Booking::with(['room', 'histories.admin'])
+            ->where('group_code', $booking->group_code)
+            ->get();
+
+        return view('cek-booking', compact('booking', 'groupBookings'));
     }
 }

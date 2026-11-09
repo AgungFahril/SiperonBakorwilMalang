@@ -35,6 +35,23 @@ class Room extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(RoomImage::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    /**
+     * Dapatkan daftar fasilitas sebagai array rapi
+     */
+    public function getFacilitiesListAttribute(): array
+    {
+        if (empty($this->facilities)) {
+            return [];
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', $this->facilities))));
+    }
+
     // Daftar tanggal yang sudah disetujui/terpakai (dipakai kalender publik)
     public function bookedDates()
     {

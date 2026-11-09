@@ -134,14 +134,25 @@
                         $isAvailable = ($status === 'tersedia');
                     @endphp
 
+                    @php
+                        $thumbImg = $room->image ?: ($room->images->first() ? $room->images->first()->path : null);
+                        $photoCount = $room->images->count() ?: ($thumbImg ? 1 : 0);
+                    @endphp
+
                     <article class="room-status-card {{ $isAvailable ? 'card-available' : 'card-booked' }}" data-status="{{ $status }}">
-                        <div class="room-card-thumbnail" @if($room->image) style="background-image: url('{{ asset('storage/'.$room->image) }}')" @endif>
-                            @unless($room->image)
+                        <div class="room-card-thumbnail" @if($thumbImg) style="background-image: url('{{ asset('storage/'.$thumbImg) }}')" @endif>
+                            @unless($thumbImg)
                                 <div class="thumbnail-placeholder">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                                     <span>{{ $room->name }}</span>
                                 </div>
                             @endunless
+
+                            @if($photoCount > 1)
+                                <span style="position: absolute; bottom: 8px; left: 8px; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; z-index: 1;">
+                                    📷 {{ $photoCount }} Foto
+                                </span>
+                            @endif
 
                             <!-- Badge Status di atas gambar -->
                             <div class="thumbnail-status-badge {{ $isAvailable ? 'badge-green' : 'badge-red' }}">
@@ -197,8 +208,9 @@
                                 </div>
 
                                 <div class="room-action-row">
-                                    <a href="{{ route('booking.form', [$room, 'tanggal' => $selectedDate->format('Y-m-d')]) }}" class="btn-action-book">
-                                        Ajukan Peminjaman Ruangan Ini &rarr;
+                                    <a href="{{ route('booking.form.multi', ['room' => $room->id, 'tanggal' => $selectedDate->format('Y-m-d')]) }}" class="btn-action-book">
+                                        <span>Ajukan Peminjaman Ruangan Ini</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                     </a>
                                 </div>
                             @else
@@ -241,8 +253,9 @@
                                 </div>
 
                                 <div class="room-action-row">
-                                    <a href="{{ route('booking.form', [$room, 'tanggal' => $selectedDate->format('Y-m-d')]) }}" class="btn-action-book btn-action-alternative">
-                                        Ajukan Peminjaman (Pilih Jam Lain) &rarr;
+                                    <a href="{{ route('booking.form.multi', ['room' => $room->id, 'tanggal' => $selectedDate->format('Y-m-d')]) }}" class="btn-action-book btn-action-alternative">
+                                        <span>Ajukan Peminjaman (Pilih Jam Lain)</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                     </a>
                                 </div>
                             @endif

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PeminjamanController;
+use App\Http\Controllers\Admin\RiwayatController;
 use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\Admin\PengaturanController;
 use App\Http\Controllers\HomeController;
@@ -18,7 +19,11 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Ketersediaan Ruangan - PUBLIK
 Route::get('/ketersediaan', [HomeController::class, 'ketersediaan'])->name('ketersediaan');
 
-// Booking - PUBLIK (tanpa login)
+// Booking - Multi Ruangan (PUBLIK, tanpa login)
+Route::get('/ajukan-peminjaman', [HomeController::class, 'bookingFormMulti'])->name('booking.form.multi');
+Route::post('/ajukan-peminjaman', [HomeController::class, 'bookingStoreMulti'])->name('booking.store.multi');
+
+// Booking - URL Ruangan spesifik (otomatis diarahkan ke form multi dengan pre-select ruangan)
 Route::get('/ruangan/{room}/ajukan', [HomeController::class, 'bookingForm'])->name('booking.form');
 Route::post('/ruangan/{room}/ajukan', [HomeController::class, 'bookingStore'])->name('booking.store');
 
@@ -55,18 +60,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
     Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
     Route::get('/peminjaman/{booking}', [PeminjamanController::class, 'show'])->name('peminjaman.show');
+    Route::patch('/peminjaman/group/{group_code}/status', [PeminjamanController::class, 'updateGroupStatus'])->name('peminjaman.groupStatus');
+    Route::delete('/peminjaman/group/{group_code}', [PeminjamanController::class, 'destroyGroup'])->name('peminjaman.destroyGroup');
     Route::patch('/peminjaman/{booking}/status', [PeminjamanController::class, 'updateStatus'])->name('peminjaman.status');
     Route::post('/peminjaman/{booking}/reschedule', [PeminjamanController::class, 'reschedule'])->name('peminjaman.reschedule');
     Route::delete('/peminjaman/{booking}', [PeminjamanController::class, 'destroy'])->name('peminjaman.destroy');
+
+    // Riwayat Penggunaan Ruangan
+    Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
 
     // Ruangan
     Route::get('/ruangan', [RuanganController::class, 'index'])->name('ruangan.index');
     Route::post('/ruangan', [RuanganController::class, 'store'])->name('ruangan.store');
     Route::put('/ruangan/{room}', [RuanganController::class, 'update'])->name('ruangan.update');
     Route::delete('/ruangan/{room}', [RuanganController::class, 'destroy'])->name('ruangan.destroy');
+    Route::delete('/ruangan/gambar/{image}', [RuanganController::class, 'destroyImage'])->name('ruangan.destroyImage');
 
     // Notifikasi
     Route::get('/notifikasi', [DashboardController::class, 'notifications'])->name('notifikasi.index');
+    Route::patch('/notifikasi/read-all', [DashboardController::class, 'markAllAsRead'])->name('notifikasi.readAll');
     Route::patch('/notifikasi/{notification}/read', [DashboardController::class, 'markAsRead'])->name('notifikasi.read');
 
     // Pengaturan

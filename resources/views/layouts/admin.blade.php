@@ -31,6 +31,11 @@
                 <span>Data Peminjaman</span>
             </a>
             
+            <a href="{{ route('admin.riwayat.index') }}" class="nav-item {{ request()->routeIs('admin.riwayat.*') ? 'active' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                <span>Riwayat Penggunaan</span>
+            </a>
+            
             <a href="{{ route('admin.ruangan.index') }}" class="nav-item {{ request()->routeIs('admin.ruangan.*') ? 'active' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" /></svg>
                 <span>Data Ruangan</span>
@@ -98,44 +103,24 @@
         
     </main>
 
-    <!-- Loading Bar -->
-    <div class="page-loading-bar" id="loadingBar"></div>
+    <!-- Global Loading Animation Component -->
+    @include('partials.loading-screen')
 
     <script>
     (function() {
         const contentArea = document.getElementById('admin-content');
-        const loadingBar = document.getElementById('loadingBar');
-
-        // Attach SPA navigation to all admin nav links
-        function attachNavListeners() {
-            document.querySelectorAll('.sidebar-nav .nav-item').forEach(link => {
-                const href = link.getAttribute('href');
-                // Skip links that are "#" or external (non-admin)
-                if (!href || href === '#' || !href.includes('/admin/')) return;
-
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (window.location.pathname === new URL(href, window.location.origin).pathname) return;
-                    navigateTo(href);
-                });
-            });
-
-            // Also handle brand logo click
-            const brand = document.querySelector('.sidebar-brand');
-            if (brand) {
-                brand.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    navigateTo(this.getAttribute('href'));
-                });
-            }
-        }
 
         async function navigateTo(url) {
-            // Show loading bar
-            loadingBar.classList.add('active');
+            if (window.SIPERON_LOADER) {
+                window.SIPERON_LOADER.show('Memuat halaman');
+            }
 
-            // Fade out current content
-            contentArea.classList.add('content-exit');
+            // Redupkan konten saat memuat tanpa membuat layar putih kosong
+            if (contentArea) {
+                contentArea.style.opacity = '0.4';
+                contentArea.style.pointerEvents = 'none';
+                contentArea.style.transition = 'opacity 0.15s ease';
+            }
 
             try {
                 const response = await fetch(url);
@@ -150,9 +135,6 @@
                 const newTitle = doc.querySelector('title');
 
                 if (newContent) {
-                    // Wait for exit animation
-                    await new Promise(r => setTimeout(r, 150));
-
                     // Replace content
                     contentArea.innerHTML = newContent.innerHTML;
 
@@ -167,26 +149,29 @@
 
                     // Re-bind modal events for new content
                     initModals();
-
-                    // Animate in
-                    contentArea.classList.remove('content-exit');
-                    contentArea.classList.add('content-enter');
                     
                     // Scroll to top of content
                     contentArea.scrollTop = 0;
-
-                    setTimeout(() => {
-                        contentArea.classList.remove('content-enter');
-                    }, 300);
+                } else {
+                    // Fallback to normal navigation
+                    window.location.href = url;
                 }
             } catch (err) {
                 // On error, fallback to normal navigation
                 window.location.href = url;
             } finally {
-                // Hide loading bar
-                setTimeout(() => loadingBar.classList.remove('active'), 300);
+                if (contentArea) {
+                    contentArea.style.opacity = '1';
+                    contentArea.style.pointerEvents = 'all';
+                }
+                if (window.SIPERON_LOADER) {
+                    window.SIPERON_LOADER.hide();
+                }
             }
         }
+
+        // Ekspos ke window agar ditangkap oleh event listener link global di partial loading-screen
+        window.adminNavigateTo = navigateTo;
 
         function updateActiveNav(url) {
             const path = new URL(url, window.location.origin).pathname;
@@ -234,11 +219,26 @@
             });
         }
 
-        // Initialize
-        attachNavListeners();
-        initModals(); // Init modals on first load
+        // Initialize modals on first load
+        initModals();
+
+        // Handle auto-spinner on form submit to prevent double-click and indicate background notifications
+        document.addEventListener('submit', function(e) {
+            const btn = e.target.querySelector('button[type="submit"]');
+            if (btn && !btn.disabled && !e.defaultPrevented) {
+                setTimeout(() => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.85';
+                    btn.style.cursor = 'not-allowed';
+                    btn.innerHTML = '<span style="display:inline-block;width:13px;height:13px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin 0.75s linear infinite;margin-right:6px;vertical-align:-2px;"></span> Memproses...';
+                }, 10);
+            }
+        });
     })();
     </script>
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 
 </body>
 </html>

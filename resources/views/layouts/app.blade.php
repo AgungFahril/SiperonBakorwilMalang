@@ -103,7 +103,7 @@
                     KONTAK
                 </a>
 
-                <a href="{{ url('/') }}#booking" class="nav-link">
+                <a href="{{ route('booking.form.multi') }}" class="nav-link {{ request()->routeIs('booking.form*') ? 'active' : '' }}">
                     AJUKAN PEMINJAMAN
                 </a>
 
@@ -278,6 +278,7 @@
             });
         });
     </script>
+    @include('partials.loading-screen')
     @yield('scripts')
 </body>
 </html>

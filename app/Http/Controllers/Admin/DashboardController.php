@@ -56,4 +56,11 @@ class DashboardController extends Controller
 
         return back()->with('success', 'Notifikasi ditandai sudah dibaca.');
     }
+
+    public function markAllAsRead()
+    {
+        AdminNotification::where('is_read', false)->update(['is_read' => true]);
+
+        return back()->with('success', 'Semua notifikasi ditandai sudah dibaca.');
+    }
 }
